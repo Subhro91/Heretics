@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brainware University Dashboard - Teacher Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Calendar CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body class="bg-gray-50">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="sidebar bg-white shadow-md flex flex-col">
+            <!-- Logo -->
+            <div class="p-6 border-b">
+                <h1 class="text-xl font-bold text-blue-600">Brainware University Dashboard</h1>
+            </div>
+            
+            <!-- Navigation Links -->
+            <nav class="flex-1">
+                <ul class="py-4">
+                    <li>
+                        <a href="index.html" class="flex items-center px-6 py-3 text-gray-700 active-link">
+                            <i class="fas fa-clipboard-check mr-3"></i>
+                            <span>Mark Attendance</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="analytics.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-chart-line mr-3"></i>
+                            <span>Analytics Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="teacher-events.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-calendar-alt mr-3"></i>
+                            <span>Upcoming Events</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="teacher-classes.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-chalkboard mr-3"></i>
+                            <span>Upcoming Classes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="teacher-tickets.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-ticket-alt mr-3"></i>
+                            <span>Tickets</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Log Out Button -->
+            <div class="p-6 border-t">
+                <button id="logoutBtn" class="flex items-center text-gray-700">
+                    <i class="fas fa-sign-out-alt mr-3"></i>
+                    <span>Log Out</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content p-8">
+            <!-- Welcome Message -->
+            <div class="bg-blue-50 rounded-lg shadow-sm p-4 mb-6">
+                <h2 id="welcomeMessage" class="text-lg font-semibold text-blue-800">Welcome Professor, loading...</h2>
+            </div>
+            
+            <!-- Top Navigation -->
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold text-gray-800">Mark Attendance</h1>
+                
+                <!-- Calendar Widget -->
+                <div class="relative calendar-widget">
+                    <div class="flex items-center bg-white border rounded-md shadow-sm hover:shadow-md transition-shadow px-4 py-2">
+                        <i class="fas fa-calendar-alt text-blue-600 mr-3 text-lg"></i>
+                        <input type="text" id="attendanceCalendar" class="py-1 outline-none text-gray-700" placeholder="Select date" readonly>
+                        <i class="fas fa-chevron-down text-gray-400 ml-2"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Attendance Form -->
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center space-x-4">
+                        <h2 class="text-xl font-semibold text-gray-800">Student Attendance</h2>
+                        
+                        <!-- Subject Filter Dropdown -->
+                        <div class="relative">
+                            <select id="subjectFilter" class="block w-48 pl-3 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                <option value="mathematics">Mathematics 101</option>
+                                <option value="computerScience">Computer Science 202</option>
+                                <option value="physics">Physics 303</option>
+                                <option value="chemistry">Chemistry 404</option>
+                                <option value="machineLearning">Machine Learning for Real World Application</option>
+                                <option value="dataMining">Data Mining and Data Warehousing</option>
+                                <option value="softComputing">Soft Computing</option>
+                                <option value="optimization">Optimization Techniques</option>
+                                <option value="patternRecognition">Pattern Recognition</option>
+                                <option value="computerVision">Computer Vision</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button id="markAllPresentBtn" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                        Mark All Present
+                    </button>
+                </div>
+                
+                <div class="flex justify-between items-center mb-4 text-sm text-gray-600">
+                    <div>
+                        <span id="attendanceSummary">Loading students...</span>
+                    </div>
+                    <div>
+                        <span id="attendanceDate"></span>
+                    </div>
+                </div>
+                
+                <!-- Read-only mode notice (appears when viewing past dates) -->
+                <div id="readOnlyNotice" class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4 hidden">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-circle text-yellow-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-yellow-700">
+                                You are viewing attendance for a past date. Records are in read-only mode.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Student List -->
+                <div id="studentList" class="space-y-4 mb-6">
+                    <!-- Student rows will be inserted here by JavaScript -->
+                </div>
+                
+                <!-- Save Attendance Button -->
+                <div class="flex justify-center mt-8">
+                    <button id="saveAttendanceBtn" class="bg-green-600 text-white px-8 py-3 rounded-md hover:bg-green-700 font-medium flex items-center">
+                        <i class="fas fa-save mr-2"></i>
+                        Save Attendance
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Calendar Script -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
+    <!-- Custom Scripts -->
+    <script src="js/firebase-init.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/teacher.js"></script>
+    
+    <script>
+        // Display welcome message
+        document.addEventListener('DOMContentLoaded', () => {
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            const userData = JSON.parse(sessionStorage.getItem('currentUser')) || { role: 'teacher', displayName: 'User' };
+            
+            if (welcomeMessage && userData) {
+                welcomeMessage.textContent = `Welcome Professor, ${userData.displayName}`;
+            }
+        });
+    </script>
+</body>
+</html> 

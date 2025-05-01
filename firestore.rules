@@ -1,0 +1,67 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users can read and update their own profile information
+    match /users/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && request.auth.uid == userId;
+      // Only allow role field to be set during creation (not updated)
+      allow update: if request.auth != null && request.auth.uid == userId && 
+                     !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']);
+    }
+    
+    // Classes access rules
+    match /classes/{classId} {
+      // Anyone can read class info
+      allow read: if request.auth != null;
+      // Only teachers can create classes
+      allow create: if request.auth != null && 
+                     exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+                     get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher';
+      // Only the teacher who created the class can update it
+      allow update: if request.auth != null && 
+                     resource.data.teacherId == request.auth.uid;
+    }
+    
+    // Attendance records access rules
+    match /attendance/{attendanceId} {
+      // Anyone can read attendance records
+      allow read: if request.auth != null;
+      
+      // Teachers can create and update attendance records for their classes
+      allow create, update: if request.auth != null && 
+                             exists(/databases/$(database)/documents/classes/$(request.resource.data.classId)) &&
+                             get(/databases/$(database)/documents/classes/$(request.resource.data.classId)).data.teacherId == request.auth.uid;
+      
+      // Students can read their own attendance records
+      allow read: if request.auth != null && 
+                   request.resource.data.studentId == request.auth.uid;
+    }
+    
+    // Tickets access rules
+    match /tickets/{ticketId} {
+      // Teachers can read all tickets
+      allow read: if request.auth != null && 
+                   exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+                   get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher';
+      
+      // Students can read only their own tickets
+      allow read: if request.auth != null && 
+                   resource.data.createdBy == request.auth.uid;
+      
+      // Anyone can create tickets
+      allow create: if request.auth != null;
+      
+      // Only teachers can close tickets
+      allow update: if request.auth != null && 
+                    exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+                    get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher';
+                    
+      // Students can only update their own tickets and cannot close them
+      allow update: if request.auth != null && 
+                    resource.data.createdBy == request.auth.uid &&
+                    !request.resource.data.diff(resource.data).affectedKeys().hasAny(['status']);
+    }
+  }
+} 

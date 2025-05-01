@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attend & Thrive - Upcoming Classes</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="sidebar bg-white shadow-md flex flex-col">
+            <!-- Logo -->
+            <div class="p-6 border-b">
+                <h1 class="text-xl font-bold text-blue-600">Attend & Thrive</h1>
+            </div>
+            
+            <!-- Navigation Links -->
+            <nav class="flex-1">
+                <ul class="py-4">
+                    <li>
+                        <a href="student.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-calendar-check mr-3"></i>
+                            <span>My Attendance</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="student-events.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-calendar-alt mr-3"></i>
+                            <span>Upcoming Events</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="student-classes.html" class="flex items-center px-6 py-3 text-gray-700 active-link">
+                            <i class="fas fa-chalkboard mr-3"></i>
+                            <span>Upcoming Classes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="student-tickets.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-ticket-alt mr-3"></i>
+                            <span>Tickets</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Log Out Button -->
+            <div class="p-6 border-t">
+                <button id="logoutBtn" class="flex items-center text-gray-700">
+                    <i class="fas fa-sign-out-alt mr-3"></i>
+                    <span>Log Out</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content p-8">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold text-gray-800">Upcoming Classes</h1>
+                
+                <!-- Week Selection -->
+                <div class="flex items-center">
+                    <button id="prevWeekBtn" class="bg-white border rounded-l-md p-2 focus:outline-none hover:bg-gray-50">
+                        <i class="fas fa-chevron-left text-gray-600"></i>
+                    </button>
+                    <div class="bg-white border-t border-b px-4 py-2">
+                        <span id="currentWeekDisplay">May 1 - May 7, 2023</span>
+                    </div>
+                    <button id="nextWeekBtn" class="bg-white border rounded-r-md p-2 focus:outline-none hover:bg-gray-50">
+                        <i class="fas fa-chevron-right text-gray-600"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Today's Classes -->
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Today's Classes</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+                    <!-- Machine Learning Class -->
+                    <div class="border border-gray-200 rounded-lg p-4 bg-blue-50">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <h3 class="font-semibold text-gray-800">PCC-CSM601 - Machine Learning for Real World Application</h3>
+                                <p class="text-sm text-gray-600">Prof. Johnson</p>
+                            </div>
+                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">In Progress</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-700 mb-2">
+                            <i class="fas fa-clock text-gray-500 mr-2"></i>
+                            <span>10:00 AM - 11:30 AM</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-700 mb-2">
+                            <i class="fas fa-map-marker-alt text-gray-500 mr-2"></i>
+                            <span>Room 101, Engineering Building</span>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-gray-200">
+                            <button class="text-blue-600 text-sm font-medium flex items-center hover:text-blue-800 view-marks-btn" data-class-id="cls1">
+                                <i class="fas fa-chart-bar mr-1"></i> View Marks
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Data Mining Class -->
+                    <div class="border border-gray-200 rounded-lg p-4 bg-white">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <h3 class="font-semibold text-gray-800">PCC-CSM602 - Data Mining and Data Warehousing</h3>
+                                <p class="text-sm text-gray-600">Dr. Thompson</p>
+                            </div>
+                            <span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded">2:00 PM</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-700 mb-2">
+                            <i class="fas fa-clock text-gray-500 mr-2"></i>
+                            <span>2:00 PM - 3:30 PM</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-700 mb-2">
+                            <i class="fas fa-map-marker-alt text-gray-500 mr-2"></i>
+                            <span>CS Lab 2, Computer Science Building</span>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-gray-200">
+                            <button class="text-blue-600 text-sm font-medium flex items-center hover:text-blue-800 view-marks-btn" data-class-id="cls2">
+                                <i class="fas fa-chart-bar mr-1"></i> View Marks
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Soft Computing Class -->
+                    <div class="border border-gray-200 rounded-lg p-4 bg-purple-50">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <h3 class="font-semibold text-gray-800">PEC-CSM601A - Soft Computing</h3>
+                                <p class="text-sm text-gray-600">Dr. Rivera</p>
+                            </div>
+                            <span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded">8:00 AM</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-700 mb-2">
+                            <i class="fas fa-clock text-gray-500 mr-2"></i>
+                            <span>8:00 AM - 9:30 AM</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-700 mb-2">
+                            <i class="fas fa-map-marker-alt text-gray-500 mr-2"></i>
+                            <span>Room P102</span>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-gray-200">
+                            <button class="text-blue-600 text-sm font-medium flex items-center hover:text-blue-800 view-marks-btn" data-class-id="cls3">
+                                <i class="fas fa-chart-bar mr-1"></i> View Marks
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Pattern Recognition Class -->
+                    <div class="border border-gray-200 rounded-lg p-4 bg-yellow-50">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <h3 class="font-semibold text-gray-800">PEC-CSM601C - Pattern Recognition</h3>
+                                <p class="text-sm text-gray-600">Prof. Martinez</p>
+                            </div>
+                            <span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded">4:00 PM</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-700 mb-2">
+                            <i class="fas fa-clock text-gray-500 mr-2"></i>
+                            <span>4:00 PM - 5:30 PM</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-700 mb-2">
+                            <i class="fas fa-map-marker-alt text-gray-500 mr-2"></i>
+                            <span>Chem Lab 1</span>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-gray-200">
+                            <button class="text-blue-600 text-sm font-medium flex items-center hover:text-blue-800 view-marks-btn" data-class-id="cls4">
+                                <i class="fas fa-chart-bar mr-1"></i> View Marks
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Weekly Schedule -->
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Weekly Schedule</h2>
+                
+                <!-- Weekly Calendar -->
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border-collapse">
+                        <!-- Header -->
+                        <thead>
+                            <tr>
+                                <th class="w-24 p-3 border bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+                                <th class="w-1/6 p-3 border bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Monday</th>
+                                <th class="w-1/6 p-3 border bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Tuesday</th>
+                                <th class="w-1/6 p-3 border bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Wednesday</th>
+                                <th class="w-1/6 p-3 border bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Thursday</th>
+                                <th class="w-1/6 p-3 border bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Friday</th>
+                            </tr>
+                        </thead>
+                        <!-- Schedule Body -->
+                        <tbody>
+                            <!-- Schedule rows will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- View Marks Modal -->
+            <div id="viewMarksModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+                <div class="bg-white rounded-lg w-full max-w-md p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold text-gray-800">Your Marks</h2>
+                        <button id="closeMarksModal" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h3 class="text-lg font-medium text-gray-800" id="marksModalClassName">Class Name</h3>
+                    </div>
+                    
+                    <div id="noMarksMessage" class="text-center py-4 text-gray-500 hidden">
+                        <p>No marks available for this class yet.</p>
+                    </div>
+                    
+                    <div id="marksContent">
+                        <div class="mb-4">
+                            <div class="border border-gray-300 rounded-md overflow-hidden">
+                                <table class="min-w-full">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assessment</th>
+                                            <th class="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                            <th class="py-2 px-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Marks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="marksTableBody">
+                                        <!-- Marks will be dynamically inserted here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 border border-gray-300 rounded-md bg-gray-50">
+                            <span class="font-medium text-gray-700">Overall Average:</span>
+                            <span id="overallAverage" class="font-bold text-blue-600">85%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end mt-4">
+                        <button id="closeMarksBtn" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script src="js/firebase-init.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Week navigation
+            const prevWeekBtn = document.getElementById('prevWeekBtn');
+            const nextWeekBtn = document.getElementById('nextWeekBtn');
+            const currentWeekDisplay = document.getElementById('currentWeekDisplay');
+            
+            // Marks modal elements
+            const viewMarksModal = document.getElementById('viewMarksModal');
+            const closeMarksModal = document.getElementById('closeMarksModal');
+            const closeMarksBtn = document.getElementById('closeMarksBtn');
+            const marksModalClassName = document.getElementById('marksModalClassName');
+            const marksTableBody = document.getElementById('marksTableBody');
+            const noMarksMessage = document.getElementById('noMarksMessage');
+            const marksContent = document.getElementById('marksContent');
+            const overallAverage = document.getElementById('overallAverage');
+            
+            // Week display
+            let currentWeekStart = new Date();
+            currentWeekStart.setDate(currentWeekStart.getDate() - currentWeekStart.getDay() + 1);
+            
+            function updateWeekDisplay() {
+                const weekEnd = new Date(currentWeekStart);
+                weekEnd.setDate(weekEnd.getDate() + 6);
+                
+                const startMonth = currentWeekStart.toLocaleString('en-US', { month: 'long' });
+                const endMonth = weekEnd.toLocaleString('en-US', { month: 'long' });
+                
+                const startDate = currentWeekStart.getDate();
+                const endDate = weekEnd.getDate();
+                
+                const startYear = currentWeekStart.getFullYear();
+                const endYear = weekEnd.getFullYear();
+                
+                let displayText = '';
+                
+                if (startMonth === endMonth && startYear === endYear) {
+                    // Same month and year
+                    displayText = `${startMonth} ${startDate} - ${endDate}, ${startYear}`;
+                } else if (startYear === endYear) {
+                    // Different months, same year
+                    displayText = `${startMonth} ${startDate} - ${endMonth} ${endDate}, ${startYear}`;
+                } else {
+                    // Different months and years
+                    displayText = `${startMonth} ${startDate}, ${startYear} - ${endMonth} ${endDate}, ${endYear}`;
+                }
+                
+                currentWeekDisplay.textContent = displayText;
+            }
+            
+            // Initialize week display
+            updateWeekDisplay();
+            
+            // Previous week button
+            prevWeekBtn.addEventListener('click', () => {
+                currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+                updateWeekDisplay();
+            });
+            
+            // Next week button
+            nextWeekBtn.addEventListener('click', () => {
+                currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+                updateWeekDisplay();
+            });
+            
+            // Handle view marks button clicks
+            document.addEventListener('click', function(event) {
+                if (event.target.closest('.view-marks-btn')) {
+                    const button = event.target.closest('.view-marks-btn');
+                    const classId = button.getAttribute('data-class-id');
+                    
+                    // Find the class name from the button's parent container
+                    const classTitle = button.closest('.border').querySelector('h3').textContent;
+                    
+                    // Set class name in modal
+                    if (marksModalClassName) {
+                        marksModalClassName.textContent = classTitle;
+                    }
+                    
+                    // Get marks for this class
+                    const savedMarks = JSON.parse(sessionStorage.getItem('studentMarks')) || [];
+                    const classMarks = savedMarks.filter(marks => marks.classId === classId);
+                    
+                    if (classMarks.length === 0) {
+                        // No marks for this class yet
+                        noMarksMessage.classList.remove('hidden');
+                        marksContent.classList.add('hidden');
+                    } else {
+                        // Show marks
+                        noMarksMessage.classList.add('hidden');
+                        marksContent.classList.remove('hidden');
+                        
+                        // Clear existing marks
+                        marksTableBody.innerHTML = '';
+                        
+                        // Calculate student's marks (we'll use the first student in the list for demo)
+                        let totalMarks = 0;
+                        let assessmentCount = 0;
+                        
+                        // Add each assessment to the table
+                        classMarks.forEach(assessment => {
+                            // Get this student's mark (first student for demo)
+                            const studentMark = assessment.studentMarks[0].mark;
+                            totalMarks += studentMark;
+                            assessmentCount++;
+                            
+                            // Format date
+                            const examDate = new Date(assessment.examDate);
+                            const formattedDate = examDate.toLocaleDateString('en-US', { 
+                                year: 'numeric', 
+                                month: 'short', 
+                                day: 'numeric' 
+                            });
+                            
+                            // Add row to table
+                            const row = document.createElement('tr');
+                            row.className = 'border-t border-gray-200';
+                            row.innerHTML = `
+                                <td class="py-3 px-4 text-sm text-gray-700">${assessment.examName}</td>
+                                <td class="py-3 px-4 text-sm text-gray-700">${formattedDate}</td>
+                                <td class="py-3 px-4 text-sm text-gray-700 text-right">${studentMark}%</td>
+                            `;
+                            
+                            marksTableBody.appendChild(row);
+                        });
+                        
+                        // Calculate average
+                        const average = assessmentCount > 0 ? Math.round(totalMarks / assessmentCount) : 0;
+                        overallAverage.textContent = `${average}%`;
+                    }
+                    
+                    // Show modal
+                    viewMarksModal.classList.remove('hidden');
+                }
+            });
+            
+            // Close marks modal
+            if (closeMarksModal) {
+                closeMarksModal.addEventListener('click', () => {
+                    viewMarksModal.classList.add('hidden');
+                });
+            }
+            
+            // Close marks modal with button
+            if (closeMarksBtn) {
+                closeMarksBtn.addEventListener('click', () => {
+                    viewMarksModal.classList.add('hidden');
+                });
+            }
+            
+            // Mock data for demo
+            const mockMarks = [
+                {
+                    classId: 'cls1',
+                    examName: 'Midterm Exam',
+                    examDate: '2023-04-15',
+                    studentMarks: [
+                        { studentName: 'GULSHAN KUMAR SINHA', mark: 85 }
+                    ]
+                },
+                {
+                    classId: 'cls1',
+                    examName: 'Quiz 1',
+                    examDate: '2023-04-05',
+                    studentMarks: [
+                        { studentName: 'GULSHAN KUMAR SINHA', mark: 92 }
+                    ]
+                },
+                {
+                    classId: 'cls3',
+                    examName: 'Assignment 1',
+                    examDate: '2023-04-10',
+                    studentMarks: [
+                        { studentName: 'GULSHAN KUMAR SINHA', mark: 78 }
+                    ]
+                }
+            ];
+            
+            // Save mock marks to session storage if no marks exist
+            if (!sessionStorage.getItem('studentMarks')) {
+                sessionStorage.setItem('studentMarks', JSON.stringify(mockMarks));
+            }
+        });
+    </script>
+</body>
+</html> 

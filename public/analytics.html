@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attend & Thrive - Analytics Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="sidebar bg-white shadow-md flex flex-col">
+            <!-- Logo -->
+            <div class="p-6 border-b">
+                <h1 class="text-xl font-bold text-blue-600">Attend & Thrive</h1>
+            </div>
+            
+            <!-- Navigation Links -->
+            <nav class="flex-1">
+                <ul class="py-4">
+                    <li>
+                        <a href="index.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-clipboard-check mr-3"></i>
+                            <span>Mark Attendance</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="analytics.html" class="flex items-center px-6 py-3 text-gray-700 active-link">
+                            <i class="fas fa-chart-line mr-3"></i>
+                            <span>Analytics Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="teacher-events.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-calendar-alt mr-3"></i>
+                            <span>Upcoming Events</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="teacher-classes.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-chalkboard mr-3"></i>
+                            <span>Upcoming Classes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="teacher-tickets.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-ticket-alt mr-3"></i>
+                            <span>Tickets</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Log Out Button -->
+            <div class="p-6 border-t">
+                <button id="logoutBtn" class="flex items-center text-gray-700">
+                    <i class="fas fa-sign-out-alt mr-3"></i>
+                    <span>Log Out</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content p-8">
+            <!-- Top Navigation -->
+            <div class="flex justify-end mb-8">
+                <nav>
+                    <ul class="flex space-x-6">
+                        <li><a href="index.html" class="font-medium text-gray-700">Mark Attendance</a></li>
+                        <li><a href="analytics.html" class="font-medium text-blue-600">Analytics</a></li>
+                    </ul>
+                </nav>
+            </div>
+            
+            <!-- Main Heading -->
+            <h1 class="text-2xl font-bold text-gray-800 mb-8">Attendance Analytics</h1>
+            
+            <!-- Analytics Content -->
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-6">Attendance Over Time</h2>
+                
+                <!-- Filter - Only Class Filter -->
+                <div class="max-w-md mb-8">
+                    <label for="classFilter" class="block text-sm font-medium text-gray-700 mb-1">Class:</label>
+                    <div class="relative">
+                        <select id="classFilter" class="block w-full border border-gray-300 rounded-md py-2 pl-3 pr-10 text-base focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <option value="all">All Classes</option>
+                            <option value="mathematics">Mathematics 101</option>
+                            <option value="computerScience">Computer Science 202</option>
+                            <option value="physics">Physics 303</option>
+                            <option value="chemistry">Chemistry 404</option>
+                            <option value="machineLearning">Machine Learning for Real World Application</option>
+                            <option value="dataMining">Data Mining and Data Warehousing</option>
+                            <option value="softComputing">Soft Computing</option>
+                            <option value="optimization">Optimization Techniques</option>
+                            <option value="patternRecognition">Pattern Recognition</option>
+                            <option value="computerVision">Computer Vision</option>
+                            <!-- Options will be dynamically populated by JavaScript -->
+                        </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                            <i class="fas fa-chevron-down text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chart -->
+                <div class="w-full h-64">
+                    <canvas id="attendanceChart"></canvas>
+                </div>
+                
+                <!-- Last Updated Info -->
+                <div class="mt-4 text-sm text-gray-500 text-right">
+                    <span>* Data reflects the last 2 weeks of attendance</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script src="js/firebase-init.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/analytics.js"></script>
+</body>
+</html> 

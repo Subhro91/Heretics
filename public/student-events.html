@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attend & Thrive - Student Events</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Calendar CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body class="bg-gray-50">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="sidebar bg-white shadow-md flex flex-col">
+            <!-- Logo -->
+            <div class="p-6 border-b">
+                <h1 class="text-xl font-bold text-blue-600">Attend & Thrive</h1>
+            </div>
+            
+            <!-- Navigation Links -->
+            <nav class="flex-1">
+                <ul class="py-4">
+                    <li>
+                        <a href="student.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-calendar-check mr-3"></i>
+                            <span>My Attendance</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="student-events.html" class="flex items-center px-6 py-3 text-gray-700 active-link">
+                            <i class="fas fa-calendar-alt mr-3"></i>
+                            <span>Upcoming Events</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="student-classes.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-chalkboard mr-3"></i>
+                            <span>Upcoming Classes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="student-tickets.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-ticket-alt mr-3"></i>
+                            <span>Tickets</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Log Out Button -->
+            <div class="p-6 border-t">
+                <button id="logoutBtn" class="flex items-center text-gray-700">
+                    <i class="fas fa-sign-out-alt mr-3"></i>
+                    <span>Log Out</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content p-8">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold text-gray-800">Upcoming Events</h1>
+                
+                <div class="flex items-center space-x-3">
+                    <!-- Filter Dropdown -->
+                    <div class="relative">
+                        <select id="eventTypeFilter" class="block w-48 pl-3 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <option value="all">All Events</option>
+                            <option value="exam">Exams</option>
+                            <option value="meeting">Meetings</option>
+                            <option value="activity">Activities</option>
+                            <option value="cultural">Cultural</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Reset Filters Button -->
+                    <button id="resetFiltersBtn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 text-sm">
+                        <i class="fas fa-undo-alt mr-1"></i> Reset Filters
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Active Filters Display -->
+            <div id="activeFilters" class="mb-4 hidden">
+                <div class="flex items-center space-x-2 text-sm text-gray-600">
+                    <span>Active filters:</span>
+                    <div id="typeFilterBadge" class="hidden px-2 py-1 bg-blue-100 text-blue-800 rounded-full"></div>
+                    <div id="dateFilterBadge" class="hidden px-2 py-1 bg-green-100 text-green-800 rounded-full"></div>
+                </div>
+            </div>
+            
+            <!-- Calendar View -->
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Event Calendar</h2>
+                <div id="eventCalendar" class="w-full"></div>
+            </div>
+            
+            <!-- Events Grid -->
+            <div id="eventsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Event cards will be dynamically inserted here -->
+                <div class="col-span-3 text-center py-8 text-gray-500">
+                    <i class="fas fa-spinner fa-spin text-xl mb-2"></i>
+                    <p>Loading events...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script src="js/firebase-init.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/events.js"></script>
+    <!-- Calendar Script -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM Elements
+            const eventsGrid = document.getElementById('eventsGrid');
+            const eventTypeFilter = document.getElementById('eventTypeFilter');
+            const resetFiltersBtn = document.getElementById('resetFiltersBtn');
+            const activeFilters = document.getElementById('activeFilters');
+            const typeFilterBadge = document.getElementById('typeFilterBadge');
+            const dateFilterBadge = document.getElementById('dateFilterBadge');
+            
+            // Load events from shared storage
+            const events = eventManager.loadEvents();
+            
+            // Filter state
+            let currentFilters = {
+                type: 'all',
+                date: null
+            };
+            
+            // Initialize calendar
+            let calendar;
+            initCalendar();
+            
+            // Initial render of events
+            renderFilteredEvents();
+            
+            // Filter events by type
+            eventTypeFilter.addEventListener('change', () => {
+                currentFilters.type = eventTypeFilter.value;
+                updateFilterDisplay();
+                renderFilteredEvents();
+            });
+            
+            // Reset filters button
+            resetFiltersBtn.addEventListener('click', () => {
+                // Reset filter state
+                currentFilters = {
+                    type: 'all',
+                    date: null
+                };
+                
+                // Reset UI elements
+                eventTypeFilter.value = 'all';
+                if (calendar) {
+                    calendar.clear();
+                }
+                
+                // Update display
+                updateFilterDisplay();
+                renderFilteredEvents();
+                
+                // Show feedback
+                showFilteringMessage('All filters reset', 1500);
+            });
+            
+            // Initialize calendar
+            function initCalendar() {
+                const calendarEvents = eventManager.createCalendarEvents(events);
+                
+                calendar = flatpickr("#eventCalendar", {
+                    inline: true,
+                    enable: calendarEvents.map(event => event.date),
+                    dateFormat: "Y-m-d",
+                    defaultDate: "today",
+                    onDayCreate: function(dObj, dStr, fp, dayElem) {
+                        // Check if this day has an event
+                        const eventDate = dayElem.dateObj.toISOString().split('T')[0];
+                        const dayEvents = calendarEvents.filter(e => e.date === eventDate);
+                        
+                        if (dayEvents.length > 0) {
+                            dayElem.classList.add("has-event");
+                            
+                            // Add dot indicator based on event count
+                            const dotContainer = document.createElement('div');
+                            dotContainer.classList.add('dot-container');
+                            dotContainer.style.display = 'flex';
+                            dotContainer.style.justifyContent = 'center';
+                            dotContainer.style.gap = '2px';
+                            dotContainer.style.marginTop = '2px';
+                            
+                            // Limit to max 3 dots
+                            const dotsToShow = Math.min(dayEvents.length, 3);
+                            
+                            for (let i = 0; i < dotsToShow; i++) {
+                                const dot = document.createElement('span');
+                                dot.classList.add('event-dot');
+                                dot.style.display = 'inline-block';
+                                dot.style.width = '4px';
+                                dot.style.height = '4px';
+                                dot.style.backgroundColor = '#3b82f6';
+                                dot.style.borderRadius = '50%';
+                                dotContainer.appendChild(dot);
+                            }
+                            
+                            dayElem.appendChild(dotContainer);
+                            
+                            // Add tooltip with event titles
+                            const titles = dayEvents.map(e => e.title).join(', ');
+                            dayElem.title = titles;
+                        }
+                    },
+                    onChange: function(selectedDates, dateStr) {
+                        if (selectedDates.length > 0) {
+                            currentFilters.date = dateStr;
+                        } else {
+                            currentFilters.date = null;
+                        }
+                        updateFilterDisplay();
+                        renderFilteredEvents();
+                    }
+                });
+                
+                // Add enhanced styles for the calendar
+                if (!document.getElementById('calendar-styles')) {
+                    const style = document.createElement('style');
+                    style.id = 'calendar-styles';
+                    style.textContent = `
+                        .flatpickr-day.has-event {
+                            font-weight: bold;
+                            color: #3b82f6 !important;
+                        }
+                        .flatpickr-day.today.has-event {
+                            border-color: #3b82f6;
+                        }
+                        .flatpickr-day.selected {
+                            background: #3b82f6 !important;
+                            color: white !important;
+                        }
+                        .flatpickr-day:hover {
+                            background: #e1e9ff !important;
+                        }
+                        .flatpickr-calendar {
+                            width: 100% !important;
+                            max-width: 100% !important;
+                            box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+                            border-radius: 0.5rem !important;
+                        }
+                        .flatpickr-day {
+                            border-radius: 50% !important;
+                            height: 40px !important;
+                            line-height: 40px !important;
+                            margin: 2px 0 !important;
+                        }
+                        .flatpickr-months {
+                            padding-top: 0.5rem !important;
+                        }
+                        .flatpickr-current-month {
+                            font-size: 1.1rem !important;
+                            padding: 0.5rem 0 !important;
+                        }
+                        .flatpickr-weekday {
+                            font-weight: 600 !important;
+                            color: #4b5563 !important;
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }
+            }
+            
+            // Apply combined filters and render events
+            function renderFilteredEvents() {
+                let filteredEvents = [...events];
+                
+                // Apply type filter if not 'all'
+                if (currentFilters.type !== 'all') {
+                    filteredEvents = filteredEvents.filter(event => event.type === currentFilters.type);
+                }
+                
+                // Apply date filter if set
+                if (currentFilters.date) {
+                    const selectedDate = new Date(currentFilters.date);
+                    filteredEvents = filteredEvents.filter(event => {
+                        const eventDate = new Date(event.date);
+                        
+                        // Single day event match
+                        if (!event.endDate && eventDate.toISOString().split('T')[0] === currentFilters.date) {
+                            return true;
+                        }
+                        
+                        // Multi-day event that includes the selected date
+                        if (event.endDate) {
+                            const endDate = new Date(event.endDate);
+                            return selectedDate >= eventDate && selectedDate <= endDate;
+                        }
+                        
+                        return false;
+                    });
+                }
+                
+                // Render the filtered events
+                if (filteredEvents.length === 0) {
+                    let message = 'No events found';
+                    
+                    if (currentFilters.type !== 'all' && currentFilters.date) {
+                        message = `No ${currentFilters.type} events found for the selected date`;
+                    } else if (currentFilters.type !== 'all') {
+                        message = `No ${currentFilters.type} events found`;
+                    } else if (currentFilters.date) {
+                        const formattedDate = new Date(currentFilters.date).toLocaleDateString('en-US', {
+                            year: 'numeric', month: 'long', day: 'numeric'
+                        });
+                        message = `No events found for ${formattedDate}`;
+                    }
+                    
+                    eventsGrid.innerHTML = `
+                        <div class="col-span-3 text-center py-8 text-gray-500">
+                            <i class="fas fa-calendar-times text-xl mb-2"></i>
+                            <p>${message}</p>
+                        </div>
+                    `;
+                } else {
+                    eventsGrid.innerHTML = eventManager.renderStudentEventCards(filteredEvents);
+                }
+            }
+            
+            // Update the filter badges display
+            function updateFilterDisplay() {
+                // Check if any filters are active
+                const hasActiveFilters = currentFilters.type !== 'all' || currentFilters.date !== null;
+                
+                // Show/hide the active filters section
+                activeFilters.classList.toggle('hidden', !hasActiveFilters);
+                
+                // Update type filter badge
+                if (currentFilters.type !== 'all') {
+                    typeFilterBadge.textContent = `Type: ${currentFilters.type.charAt(0).toUpperCase() + currentFilters.type.slice(1)}`;
+                    typeFilterBadge.classList.remove('hidden');
+                } else {
+                    typeFilterBadge.classList.add('hidden');
+                }
+                
+                // Update date filter badge
+                if (currentFilters.date) {
+                    const formattedDate = new Date(currentFilters.date).toLocaleDateString('en-US', {
+                        year: 'numeric', month: 'long', day: 'numeric'
+                    });
+                    dateFilterBadge.textContent = `Date: ${formattedDate}`;
+                    dateFilterBadge.classList.remove('hidden');
+                } else {
+                    dateFilterBadge.classList.add('hidden');
+                }
+            }
+            
+            // Display a filtering message to provide visual feedback
+            function showFilteringMessage(message, duration = 0) {
+                // Remove any existing message
+                removeFilteringMessage();
+                
+                // Create a new message element
+                const messageElement = document.createElement('div');
+                messageElement.id = 'filtering-message';
+                messageElement.className = 'fixed top-4 right-4 bg-blue-100 text-blue-800 px-4 py-2 rounded-md shadow-md z-50';
+                messageElement.textContent = message;
+                document.body.appendChild(messageElement);
+                
+                // Remove after duration (if specified)
+                if (duration > 0) {
+                    setTimeout(removeFilteringMessage, duration);
+                }
+            }
+            
+            // Remove the filtering message
+            function removeFilteringMessage() {
+                const messageElement = document.getElementById('filtering-message');
+                if (messageElement) {
+                    messageElement.remove();
+                }
+            }
+            
+            // Handle logout
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    // Clear session storage
+                    sessionStorage.removeItem('currentUser');
+                    // Redirect to login
+                    window.location.href = 'login.html';
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

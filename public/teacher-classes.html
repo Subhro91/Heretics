@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attend & Thrive - Upcoming Classes</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="sidebar bg-white shadow-md flex flex-col">
+            <!-- Logo -->
+            <div class="p-6 border-b">
+                <h1 class="text-xl font-bold text-blue-600">Attend & Thrive</h1>
+            </div>
+            
+            <!-- Navigation Links -->
+            <nav class="flex-1">
+                <ul class="py-4">
+                    <li>
+                        <a href="index.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-clipboard-check mr-3"></i>
+                            <span>Mark Attendance</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="analytics.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-chart-line mr-3"></i>
+                            <span>Analytics Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="teacher-events.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-calendar-alt mr-3"></i>
+                            <span>Upcoming Events</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="teacher-classes.html" class="flex items-center px-6 py-3 text-gray-700 active-link">
+                            <i class="fas fa-chalkboard mr-3"></i>
+                            <span>Upcoming Classes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="teacher-tickets.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-ticket-alt mr-3"></i>
+                            <span>Tickets</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Log Out Button -->
+            <div class="p-6 border-t">
+                <button id="logoutBtn" class="flex items-center text-gray-700">
+                    <i class="fas fa-sign-out-alt mr-3"></i>
+                    <span>Log Out</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content p-8">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold text-gray-800">Upcoming Classes</h1>
+                
+                <!-- Week Selection -->
+                <div class="flex items-center">
+                    <button id="prevWeekBtn" class="bg-white border rounded-l-md p-2 focus:outline-none hover:bg-gray-50">
+                        <i class="fas fa-chevron-left text-gray-600"></i>
+                    </button>
+                    <div class="bg-white border-t border-b px-4 py-2">
+                        <span id="currentWeekDisplay">May 1 - May 7, 2023</span>
+                    </div>
+                    <button id="nextWeekBtn" class="bg-white border rounded-r-md p-2 focus:outline-none hover:bg-gray-50">
+                        <i class="fas fa-chevron-right text-gray-600"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Today's Classes -->
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold text-gray-800">Today's Classes</h2>
+                    
+                    <button id="addClassBtn" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center">
+                        <i class="fas fa-plus mr-2"></i>
+                        <span>Add Class</span>
+                    </button>
+                </div>
+                
+                <div id="todayClasses" class="mb-2">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Class cards will be dynamically inserted here -->
+                        <div class="col-span-2 text-center py-6 text-gray-500">
+                            <i class="fas fa-spinner fa-spin text-xl mb-2"></i>
+                            <p>Loading today's classes...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Weekly Schedule -->
+            <div id="weeklySchedule" class="bg-white rounded-lg shadow-sm p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Weekly Teaching Schedule</h2>
+                
+                <!-- Weekly Calendar -->
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border-collapse">
+                        <!-- Header -->
+                        <thead>
+                            <tr>
+                                <th class="w-24 p-3 border bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+                                <th class="w-1/6 p-3 border bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Monday</th>
+                                <th class="w-1/6 p-3 border bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Tuesday</th>
+                                <th class="w-1/6 p-3 border bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Wednesday</th>
+                                <th class="w-1/6 p-3 border bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Thursday</th>
+                                <th class="w-1/6 p-3 border bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Friday</th>
+                            </tr>
+                        </thead>
+                        <!-- Schedule Body -->
+                        <tbody>
+                            <!-- Loading placeholder -->
+                            <tr>
+                                <td colspan="6" class="border p-4 text-center text-gray-500">
+                                    <i class="fas fa-spinner fa-spin mr-2"></i>
+                                    Loading class schedule...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Add Class Modal -->
+            <div id="addClassModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+                <div class="bg-white rounded-lg w-full max-w-md p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold text-gray-800">Add New Class</h2>
+                        <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <form id="classForm" class="space-y-4">
+                        <div>
+                            <label for="className" class="block text-sm font-medium text-gray-700 mb-1">Class Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="className" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                            <p class="mt-1 text-xs text-gray-500">Example: Machine Learning for Real World Application</p>
+                        </div>
+                        
+                        <div>
+                            <label for="classDescription" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <input type="text" id="classDescription" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <p class="mt-1 text-xs text-gray-500">Brief description of the class</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="classDay" class="block text-sm font-medium text-gray-700 mb-1">Day <span class="text-red-500">*</span></label>
+                                <select id="classDay" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                                    <option value="monday">Monday</option>
+                                    <option value="tuesday">Tuesday</option>
+                                    <option value="wednesday">Wednesday</option>
+                                    <option value="thursday">Thursday</option>
+                                    <option value="friday">Friday</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="classTime" class="block text-sm font-medium text-gray-700 mb-1">Time <span class="text-red-500">*</span></label>
+                                <select id="classTime" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                                    <option value="08:00">8:00 AM</option>
+                                    <option value="10:00">10:00 AM</option>
+                                    <option value="12:00">12:00 PM</option>
+                                    <option value="14:00">2:00 PM</option>
+                                    <option value="16:00">4:00 PM</option>
+                                </select>
+                                <p class="mt-1 text-xs text-gray-500">Classes are 90 minutes</p>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="classRoom" class="block text-sm font-medium text-gray-700 mb-1">Room <span class="text-red-500">*</span></label>
+                            <input type="text" id="classRoom" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                            <p class="mt-1 text-xs text-gray-500">Example: Room 101, Engineering Building</p>
+                        </div>
+                        
+                        <div class="flex justify-end space-x-3 pt-2 border-t mt-4">
+                            <button type="button" id="cancelClass" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-4 py-2 bg-blue-600 border border-transparent rounded-md text-white hover:bg-blue-700">
+                                Save Class
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Marks Upload Modal -->
+            <div id="marksUploadModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+                <div class="bg-white rounded-lg w-full max-w-md p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold text-gray-800">Upload Student Marks</h2>
+                        <button id="closeMarksModal" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h3 class="text-lg font-medium text-gray-800" id="marksModalClassName">Class Name</h3>
+                    </div>
+                    
+                    <form id="marksUploadForm" class="space-y-4">
+                        <div>
+                            <label for="examName" class="block text-sm font-medium text-gray-700 mb-1">Exam/Assessment Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="examName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                            <p class="mt-1 text-xs text-gray-500">Example: Midterm Exam, Quiz 1, etc.</p>
+                        </div>
+                        
+                        <div>
+                            <label for="examDate" class="block text-sm font-medium text-gray-700 mb-1">Date <span class="text-red-500">*</span></label>
+                            <input type="date" id="examDate" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Student Marks <span class="text-red-500">*</span></label>
+                            <div class="border border-gray-300 rounded-md p-3 max-h-60 overflow-y-auto">
+                                <table class="min-w-full">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider py-2">Student Name</th>
+                                            <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider py-2">Marks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="py-2 text-sm text-gray-700">GULSHAN KUMAR SINHA</td>
+                                            <td class="py-2">
+                                                <input type="number" min="0" max="100" class="w-full px-2 py-1 border border-gray-300 rounded-md text-right" value="85">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2 text-sm text-gray-700">ABHISHEK BISWAS</td>
+                                            <td class="py-2">
+                                                <input type="number" min="0" max="100" class="w-full px-2 py-1 border border-gray-300 rounded-md text-right" value="78">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2 text-sm text-gray-700">MANSIJ ROY</td>
+                                            <td class="py-2">
+                                                <input type="number" min="0" max="100" class="w-full px-2 py-1 border border-gray-300 rounded-md text-right" value="92">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2 text-sm text-gray-700">ROHIT KOLEY</td>
+                                            <td class="py-2">
+                                                <input type="number" min="0" max="100" class="w-full px-2 py-1 border border-gray-300 rounded-md text-right" value="67">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2 text-sm text-gray-700">SUDIPTA DEY</td>
+                                            <td class="py-2">
+                                                <input type="number" min="0" max="100" class="w-full px-2 py-1 border border-gray-300 rounded-md text-right" value="88">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-end space-x-3 pt-2 border-t mt-4">
+                            <button type="button" id="cancelMarks" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-4 py-2 bg-blue-600 border border-transparent rounded-md text-white hover:bg-blue-700">
+                                Save Marks
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script src="js/firebase-init.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/classes.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Week navigation
+            const prevWeekBtn = document.getElementById('prevWeekBtn');
+            const nextWeekBtn = document.getElementById('nextWeekBtn');
+            const currentWeekDisplay = document.getElementById('currentWeekDisplay');
+            
+            // Modal elements
+            const addClassBtn = document.getElementById('addClassBtn');
+            const addClassModal = document.getElementById('addClassModal');
+            const closeModal = document.getElementById('closeModal');
+            const cancelClass = document.getElementById('cancelClass');
+            const classForm = document.getElementById('classForm');
+            
+            // Marks Modal elements
+            const marksUploadModal = document.getElementById('marksUploadModal');
+            const closeMarksModal = document.getElementById('closeMarksModal');
+            const cancelMarks = document.getElementById('cancelMarks');
+            const marksUploadForm = document.getElementById('marksUploadForm');
+            
+            let currentWeekStart = new Date();
+            // Set to Monday of current week
+            currentWeekStart.setDate(currentWeekStart.getDate() - currentWeekStart.getDay() + 1);
+            
+            // Load classes and render them
+            const classes = classManager.loadClasses();
+            
+            // Render today's classes
+            const todayClassesContainer = document.querySelector('#todayClasses .grid');
+            if (todayClassesContainer) {
+                todayClassesContainer.innerHTML = classManager.renderTodayClasses(classes);
+            }
+            
+            // Render weekly schedule
+            const scheduleBody = document.querySelector('#weeklySchedule tbody');
+            if (scheduleBody) {
+                scheduleBody.innerHTML = classManager.renderWeeklySchedule(classes);
+            }
+            
+            // Update week display
+            function updateWeekDisplay() {
+                const weekEnd = new Date(currentWeekStart);
+                weekEnd.setDate(weekEnd.getDate() + 6);
+                
+                const startMonth = currentWeekStart.toLocaleString('en-US', { month: 'long' });
+                const endMonth = weekEnd.toLocaleString('en-US', { month: 'long' });
+                
+                const startDate = currentWeekStart.getDate();
+                const endDate = weekEnd.getDate();
+                
+                const startYear = currentWeekStart.getFullYear();
+                const endYear = weekEnd.getFullYear();
+                
+                let displayText = '';
+                
+                if (startMonth === endMonth && startYear === endYear) {
+                    // Same month and year
+                    displayText = `${startMonth} ${startDate} - ${endDate}, ${startYear}`;
+                } else if (startYear === endYear) {
+                    // Different months, same year
+                    displayText = `${startMonth} ${startDate} - ${endMonth} ${endDate}, ${startYear}`;
+                } else {
+                    // Different months and years
+                    displayText = `${startMonth} ${startDate}, ${startYear} - ${endMonth} ${endDate}, ${endYear}`;
+                }
+                
+                currentWeekDisplay.textContent = displayText;
+            }
+            
+            // Initialize week display
+            updateWeekDisplay();
+            
+            // Previous week button
+            prevWeekBtn.addEventListener('click', () => {
+                // Move to previous week
+                currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+                updateWeekDisplay();
+            });
+            
+            // Next week button
+            nextWeekBtn.addEventListener('click', () => {
+                // Move to next week
+                currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+                updateWeekDisplay();
+            });
+            
+            // Open add class modal
+            addClassBtn.addEventListener('click', () => {
+                addClassModal.classList.remove('hidden');
+            });
+            
+            // Close add class modal
+            closeModal.addEventListener('click', () => {
+                addClassModal.classList.add('hidden');
+            });
+            
+            // Cancel add class
+            cancelClass.addEventListener('click', () => {
+                addClassModal.classList.add('hidden');
+            });
+            
+            // Close marks modal
+            closeMarksModal.addEventListener('click', () => {
+                marksUploadModal.classList.add('hidden');
+            });
+            
+            // Cancel marks upload
+            cancelMarks.addEventListener('click', () => {
+                marksUploadModal.classList.add('hidden');
+            });
+            
+            // Submit marks form
+            marksUploadForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Get form data
+                const classId = marksUploadForm.getAttribute('data-class-id');
+                const examName = document.getElementById('examName').value;
+                const examDate = document.getElementById('examDate').value;
+                
+                // Get all mark inputs
+                const markInputs = marksUploadForm.querySelectorAll('tbody input[type="number"]');
+                const studentMarks = [];
+                
+                // Get student names
+                const studentNames = Array.from(marksUploadForm.querySelectorAll('tbody td:first-child')).map(td => td.textContent);
+                
+                // Collect all marks
+                markInputs.forEach((input, index) => {
+                    studentMarks.push({
+                        studentName: studentNames[index],
+                        mark: parseInt(input.value, 10)
+                    });
+                });
+                
+                // Create marks object
+                const marksData = {
+                    classId,
+                    examName,
+                    examDate,
+                    studentMarks
+                };
+                
+                // Save marks to session storage
+                let savedMarks = JSON.parse(sessionStorage.getItem('studentMarks')) || [];
+                savedMarks.push(marksData);
+                sessionStorage.setItem('studentMarks', JSON.stringify(savedMarks));
+                
+                // Close the modal
+                marksUploadModal.classList.add('hidden');
+                
+                // Show success message
+                alert('Marks uploaded successfully!');
+            });
+            
+            // Submit form to add new class
+            classForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Get form data
+                const className = document.getElementById('className').value;
+                const description = document.getElementById('classDescription').value;
+                const day = document.getElementById('classDay').value;
+                const time = document.getElementById('classTime').value;
+                const room = document.getElementById('classRoom').value;
+                
+                // Calculate end time (90 minutes later)
+                const [hours, minutes] = time.split(':').map(Number);
+                const endHours = hours + Math.floor((minutes + 90) / 60);
+                const endMinutes = (minutes + 90) % 60;
+                const endTime = `${endHours.toString().padStart(2, '0')}:${endMinutes.toString().padStart(2, '0')}`;
+                
+                // Determine subject from class name for color coding
+                let subject = 'machineLearning'; // Default
+                if (className.toLowerCase().includes('machine learning')) subject = 'machineLearning';
+                else if (className.toLowerCase().includes('data mining')) subject = 'dataMining';
+                else if (className.toLowerCase().includes('soft computing')) subject = 'softComputing';
+                else if (className.toLowerCase().includes('optimization')) subject = 'optimization';
+                else if (className.toLowerCase().includes('pattern recognition')) subject = 'patternRecognition';
+                else if (className.toLowerCase().includes('computer vision')) subject = 'computerVision';
+                else if (className.toLowerCase().includes('mathematics')) subject = 'mathematics';
+                else if (className.toLowerCase().includes('computer science')) subject = 'computerScience';
+                else if (className.toLowerCase().includes('physics')) subject = 'physics';
+                else if (className.toLowerCase().includes('chemistry')) subject = 'chemistry';
+                
+                // Create new class object
+                const newClass = {
+                    name: className,
+                    description: description,
+                    day: day,
+                    time: time,
+                    endTime: endTime,
+                    room: room,
+                    subject: subject,
+                    enrolledStudents: Math.floor(Math.random() * 20) + 15 // Random number between 15-35
+                };
+                
+                // Add the class
+                const updatedClass = classManager.addClass(newClass);
+                
+                // Reload classes
+                const classes = classManager.loadClasses();
+                
+                // Re-render today's classes
+                const todayClassesContainer = document.querySelector('#todayClasses .grid');
+                if (todayClassesContainer) {
+                    todayClassesContainer.innerHTML = classManager.renderTodayClasses(classes);
+                }
+                
+                // Re-render weekly schedule
+                const scheduleBody = document.querySelector('#weeklySchedule tbody');
+                if (scheduleBody) {
+                    scheduleBody.innerHTML = classManager.renderWeeklySchedule(classes);
+                }
+                
+                // Close the modal
+                addClassModal.classList.add('hidden');
+                
+                // Reset form
+                classForm.reset();
+            });
+            
+            // Handle logout
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    // Clear session storage
+                    sessionStorage.removeItem('currentUser');
+                    // Redirect to login
+                    window.location.href = 'login.html';
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

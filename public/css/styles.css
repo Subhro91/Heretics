@@ -1,0 +1,63 @@
+/* Import Tailwind CSS */
+@import 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css';
+
+/* Custom styles */
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+.sidebar {
+  min-height: 100vh;
+  width: 230px;
+}
+
+.active-link {
+  background-color: #f0f4f8;
+}
+
+.main-content {
+  min-height: 100vh;
+  width: calc(100% - 230px);
+}
+
+/* Improved Calendar Styles */
+.flatpickr-calendar {
+  border: 2px solid #e5e7eb !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+  padding: 10px !important;
+}
+
+.flatpickr-day {
+  border: 1px solid #f3f4f6 !important;
+  margin: 2px !important;
+}
+
+.flatpickr-day.today {
+  border: 2px solid #3b82f6 !important;
+}
+
+.flatpickr-day.selected {
+  border: 2px solid #1e40af !important;
+}
+
+.flatpickr-months {
+  border-bottom: 2px solid #e5e7eb !important;
+  margin-bottom: 10px !important;
+}
+
+.flatpickr-weekday {
+  background-color: #f9fafb !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  font-weight: 600 !important;
+}
+
+.event-dot {
+  box-shadow: 0 0 0 1px #ffffff !important;
+}
+
+/* Event form styling */
+.event-form-section {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+} 

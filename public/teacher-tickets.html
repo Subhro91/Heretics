@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attend & Thrive - Support Tickets</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .chat-container {
+            height: 350px;
+            overflow-y: auto;
+            padding: 15px;
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 0.5rem;
+            max-width: 80%;
+        }
+        .message-user {
+            background-color: #e9f2ff;
+            margin-left: auto;
+        }
+        .message-other {
+            background-color: #f0f0f0;
+        }
+        .message-meta {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 2px;
+        }
+        .ticket-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s ease;
+        }
+        .ticket-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .ticket-status-open {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        .ticket-status-closed {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="sidebar bg-white shadow-md flex flex-col">
+            <!-- Logo -->
+            <div class="p-6 border-b">
+                <h1 class="text-xl font-bold text-blue-600">Attend & Thrive</h1>
+            </div>
+            
+            <!-- Navigation Links -->
+            <nav class="flex-1">
+                <ul class="py-4">
+                    <li>
+                        <a href="index.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-clipboard-check mr-3"></i>
+                            <span>Mark Attendance</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="analytics.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-chart-line mr-3"></i>
+                            <span>Analytics Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="teacher-events.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-calendar-alt mr-3"></i>
+                            <span>Upcoming Events</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="teacher-classes.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-chalkboard mr-3"></i>
+                            <span>Upcoming Classes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="teacher-tickets.html" class="flex items-center px-6 py-3 text-gray-700 active-link">
+                            <i class="fas fa-ticket-alt mr-3"></i>
+                            <span>Tickets</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Log Out Button -->
+            <div class="p-6 border-t">
+                <button id="logoutBtn" class="flex items-center text-gray-700">
+                    <i class="fas fa-sign-out-alt mr-3"></i>
+                    <span>Log Out</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-gray-800">Support Tickets</h1>
+                <button id="newTicketBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center">
+                    <i class="fas fa-plus mr-2"></i>
+                    <span>New Ticket</span>
+                </button>
+            </div>
+            
+            <!-- Ticket List and Chat Container -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Ticket List -->
+                <div class="md:col-span-1">
+                    <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                        <h2 class="text-lg font-semibold mb-3">All Tickets</h2>
+                        <div id="ticketsList" class="space-y-3">
+                            <!-- Tickets will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Selected Ticket and Chat -->
+                <div class="md:col-span-2">
+                    <div id="selectedTicketContainer" class="bg-white rounded-lg shadow-sm p-4 hidden">
+                        <div class="flex justify-between items-center mb-4">
+                            <div>
+                                <h2 id="selectedTicketTitle" class="text-lg font-semibold"></h2>
+                                <p id="selectedTicketDetails" class="text-sm text-gray-600"></p>
+                            </div>
+                            <div>
+                                <span id="selectedTicketStatus" class="px-3 py-1 rounded-full text-xs font-medium"></span>
+                                <button id="closeTicketBtn" class="ml-2 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm">
+                                    Close Ticket
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Chat Area -->
+                        <div class="chat-container mb-4" id="chatMessages">
+                            <!-- Messages will be appended here -->
+                        </div>
+                        
+                        <!-- Message Input -->
+                        <div class="flex">
+                            <input 
+                                type="text" 
+                                id="messageInput" 
+                                class="flex-1 border border-gray-300 rounded-l-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                                placeholder="Type your message here..."
+                            >
+                            <button 
+                                id="sendMessageBtn" 
+                                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r-md"
+                            >
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Empty State -->
+                    <div id="emptyState" class="bg-white rounded-lg shadow-sm p-6 text-center">
+                        <div class="text-gray-400 mb-4">
+                            <i class="fas fa-ticket-alt text-5xl"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-700 mb-2">No ticket selected</h3>
+                        <p class="text-gray-500">Select a ticket from the list or create a new one to start chatting</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- New Ticket Modal -->
+            <div id="newTicketModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+                <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-medium">Create New Ticket</h3>
+                        <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <form id="newTicketForm">
+                        <div class="mb-4">
+                            <label for="ticketTitle" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                            <input type="text" id="ticketTitle" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="ticketDescription" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <textarea id="ticketDescription" rows="4" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                        </div>
+                        
+                        <div class="flex justify-end">
+                            <button type="button" id="cancelTicketBtn" class="mr-2 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md">
+                                Create Ticket
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script src="js/firebase-init.js"></script>
+    <script>
+        // Debugging helper function
+        function logDebug(message, data) {
+            console.log(`[DEBUG] ${message}`, data || '');
+        }
+        
+        // DOM elements
+        const logoutBtn = document.getElementById('logoutBtn');
+        const newTicketBtn = document.getElementById('newTicketBtn');
+        const newTicketModal = document.getElementById('newTicketModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelTicketBtn = document.getElementById('cancelTicketBtn');
+        const ticketsList = document.getElementById('ticketsList');
+        const selectedTicketContainer = document.getElementById('selectedTicketContainer');
+        const emptyState = document.getElementById('emptyState');
+        const selectedTicketTitle = document.getElementById('selectedTicketTitle');
+        const selectedTicketDetails = document.getElementById('selectedTicketDetails');
+        const selectedTicketStatus = document.getElementById('selectedTicketStatus');
+        const closeTicketBtn = document.getElementById('closeTicketBtn');
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const sendMessageBtn = document.getElementById('sendMessageBtn');
+        const newTicketForm = document.getElementById('newTicketForm');
+        
+        // Get user data from session storage
+        const storedUser = sessionStorage.getItem('currentUser');
+        if (!storedUser) {
+            window.location.href = 'login.html';
+        }
+        
+        const currentUser = JSON.parse(storedUser);
+        let currentTicket = null;
+        let messagesRef = null;
+        let ticketsRef = null;
+        
+        // Initialize Firebase references
+        function initFirebase() {
+            logDebug('Initializing Firebase references');
+            ticketsRef = firebase.firestore().collection('tickets');
+            
+            logDebug('Checking if rtdb is available', window.rtdb ? 'Yes' : 'No');
+            
+            // Load tickets
+            loadTickets();
+            
+            // Set up logout button
+            logoutBtn.addEventListener('click', () => {
+                sessionStorage.removeItem('currentUser');
+                window.location.href = 'login.html';
+            });
+        }
+        
+        // Load all tickets
+        function loadTickets() {
+            ticketsRef
+                .orderBy('createdAt', 'desc')
+                .onSnapshot(snapshot => {
+                    ticketsList.innerHTML = '';
+                    
+                    if (snapshot.empty) {
+                        ticketsList.innerHTML = '<p class="text-center text-gray-500">No tickets yet</p>';
+                        return;
+                    }
+                    
+                    snapshot.forEach(doc => {
+                        const ticket = doc.data();
+                        ticket.id = doc.id;
+                        
+                        const ticketCard = document.createElement('div');
+                        ticketCard.className = 'ticket-card p-3 cursor-pointer';
+                        
+                        const statusClass = ticket.status === 'open' ? 'ticket-status-open' : 'ticket-status-closed';
+                        
+                        ticketCard.innerHTML = `
+                            <div class="flex justify-between items-start">
+                                <h3 class="font-medium">${ticket.title}</h3>
+                                <span class="${statusClass} text-xs px-2 py-1 rounded-full">${ticket.status}</span>
+                            </div>
+                            <p class="text-sm text-gray-600 truncate mt-1">${ticket.description}</p>
+                            <div class="text-xs text-gray-500 mt-2">
+                                ${new Date(ticket.createdAt).toLocaleString()}
+                            </div>
+                        `;
+                        
+                        ticketCard.addEventListener('click', () => {
+                            selectTicket(ticket);
+                        });
+                        
+                        ticketsList.appendChild(ticketCard);
+                    });
+                });
+        }
+        
+        // Select a ticket to view/chat
+        function selectTicket(ticket) {
+            logDebug('Selecting ticket', ticket.id);
+            currentTicket = ticket;
+            
+            try {
+                // Update UI
+                selectedTicketTitle.textContent = ticket.title;
+                selectedTicketDetails.textContent = `Created on ${new Date(ticket.createdAt).toLocaleString()}`;
+                
+                // Update status display
+                selectedTicketStatus.textContent = ticket.status;
+                selectedTicketStatus.className = ticket.status === 'open' ? 
+                    'ticket-status-open px-3 py-1 rounded-full text-xs font-medium' : 
+                    'ticket-status-closed px-3 py-1 rounded-full text-xs font-medium';
+                
+                // Show/hide close ticket button based on role and status
+                if (currentUser.role === 'teacher' && ticket.status === 'open') {
+                    closeTicketBtn.classList.remove('hidden');
+                } else {
+                    closeTicketBtn.classList.add('hidden');
+                }
+                
+                // Show ticket container, hide empty state
+                selectedTicketContainer.classList.remove('hidden');
+                emptyState.classList.add('hidden');
+                
+                // Clear chat messages
+                chatMessages.innerHTML = '';
+                
+                // Set up message listener
+                setupMessageListener(ticket.id);
+                
+                // Disable message input if ticket is closed
+                if (ticket.status === 'closed') {
+                    messageInput.disabled = true;
+                    sendMessageBtn.disabled = true;
+                    messageInput.placeholder = 'This ticket is closed';
+                } else {
+                    messageInput.disabled = false;
+                    sendMessageBtn.disabled = false;
+                    messageInput.placeholder = 'Type your message here...';
+                }
+            } catch (error) {
+                console.error('Error selecting ticket:', error);
+            }
+        }
+        
+        // Set up message listener for real-time chat
+        function setupMessageListener(ticketId) {
+            // Clear previous listener
+            if (messagesRef) {
+                messagesRef.off();
+            }
+            
+            console.log('Setting up listener for:', `messages/${ticketId}`);
+            messagesRef = window.rtdb.ref(`messages/${ticketId}`);
+            
+            // Listen for new messages
+            messagesRef.on('child_added', snapshot => {
+                console.log('New message received:', snapshot.val());
+                const message = snapshot.val();
+                addMessageToChat(message);
+                
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
+        }
+        
+        // Add message to chat UI
+        function addMessageToChat(message) {
+            const isCurrentUser = message.userId === currentUser.uid;
+            const messageClass = isCurrentUser ? 'message message-user' : 'message message-other';
+            
+            const messageElement = document.createElement('div');
+            messageElement.className = messageClass;
+            
+            messageElement.innerHTML = `
+                <div class="font-medium">${message.userName}</div>
+                <div>${message.text}</div>
+                <div class="message-meta">${new Date(message.timestamp).toLocaleString()}</div>
+            `;
+            
+            chatMessages.appendChild(messageElement);
+        }
+        
+        // Send a new message
+        function sendMessage() {
+            if (!currentTicket || currentTicket.status === 'closed') return;
+            
+            const text = messageInput.value.trim();
+            if (!text) return;
+            
+            const message = {
+                text: text,
+                userId: currentUser.uid,
+                userName: currentUser.displayName,
+                timestamp: Date.now()
+            };
+            
+            // Add to database
+            messagesRef.push(message)
+                .then(() => console.log('Message sent successfully'))
+                .catch(error => console.error('Error sending message:', error));
+            
+            // Clear input
+            messageInput.value = '';
+        }
+        
+        // Create a new ticket
+        function createNewTicket(title, description) {
+            const ticketData = {
+                title: title,
+                description: description,
+                createdBy: currentUser.uid,
+                createdByName: currentUser.displayName,
+                createdAt: Date.now(),
+                status: 'open',
+                userRole: currentUser.role
+            };
+            
+            // Add to Firestore
+            ticketsRef.add(ticketData)
+                .then(docRef => {
+                    // Send initial message
+                    const messagesRef = window.rtdb.ref(`messages/${docRef.id}`);
+                    messagesRef.push({
+                        text: description,
+                        userId: currentUser.uid,
+                        userName: currentUser.displayName,
+                        timestamp: Date.now()
+                    })
+                    .then(() => console.log('Initial message sent successfully'))
+                    .catch(error => console.error('Error sending initial message:', error));
+                    
+                    // Close modal
+                    newTicketModal.classList.add('hidden');
+                    
+                    // Select the new ticket
+                    ticketData.id = docRef.id;
+                    selectTicket(ticketData);
+                })
+                .catch(error => {
+                    console.error('Error creating ticket:', error);
+                    alert('Error creating ticket. Please try again.');
+                });
+        }
+        
+        // Close a ticket (teacher only)
+        function closeTicket() {
+            if (!currentTicket || currentUser.role !== 'teacher') return;
+            
+            ticketsRef.doc(currentTicket.id).update({
+                status: 'closed'
+            })
+            .then(() => {
+                // Update local data
+                currentTicket.status = 'closed';
+                
+                // Update UI
+                selectedTicketStatus.textContent = 'closed';
+                selectedTicketStatus.className = 'ticket-status-closed px-3 py-1 rounded-full text-xs font-medium';
+                
+                // Disable input
+                messageInput.disabled = true;
+                sendMessageBtn.disabled = true;
+                messageInput.placeholder = 'This ticket is closed';
+                
+                // Hide close button
+                closeTicketBtn.classList.add('hidden');
+            })
+            .catch(error => {
+                console.error('Error closing ticket:', error);
+                alert('Error closing ticket. Please try again.');
+            });
+        }
+        
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            initFirebase();
+            
+            // New ticket modal
+            newTicketBtn.addEventListener('click', () => {
+                newTicketModal.classList.remove('hidden');
+            });
+            
+            closeModalBtn.addEventListener('click', () => {
+                newTicketModal.classList.add('hidden');
+            });
+            
+            cancelTicketBtn.addEventListener('click', () => {
+                newTicketModal.classList.add('hidden');
+            });
+            
+            // Create ticket form
+            newTicketForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const title = document.getElementById('ticketTitle').value.trim();
+                const description = document.getElementById('ticketDescription').value.trim();
+                
+                if (title && description) {
+                    createNewTicket(title, description);
+                    newTicketForm.reset();
+                }
+            });
+            
+            // Send message
+            sendMessageBtn.addEventListener('click', sendMessage);
+            
+            messageInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // Close ticket
+            closeTicketBtn.addEventListener('click', closeTicket);
+        });
+    </script>
+</body>
+</html> 

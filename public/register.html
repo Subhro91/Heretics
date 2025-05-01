@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attend & Thrive - Register</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8">
+            <div class="text-center">
+                <h1 class="text-3xl font-bold text-blue-600">Attend & Thrive</h1>
+                <p class="mt-2 text-sm text-gray-600">Create your account</p>
+            </div>
+            
+            <div class="mt-8 bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+                <form id="registerForm" class="space-y-6">
+                    <div>
+                        <label for="displayName" class="block text-sm font-medium text-gray-700">Full Name</label>
+                        <div class="mt-1">
+                            <input id="displayName" name="displayName" type="text" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                        <div class="mt-1">
+                            <input id="email" name="email" type="email" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <div class="mt-1">
+                            <input id="password" name="password" type="password" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                        <div class="mt-1">
+                            <input id="confirmPassword" name="confirmPassword" type="password" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">I am a:</label>
+                        <div class="mt-1 grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="inline-flex items-center p-3 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50">
+                                    <input type="radio" name="role" value="teacher" class="h-4 w-4 text-blue-600 focus:ring-blue-500" checked>
+                                    <span class="ml-3 text-gray-700">Teacher</span>
+                                </label>
+                            </div>
+                            <div>
+                                <label class="inline-flex items-center p-3 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50">
+                                    <input type="radio" name="role" value="student" class="h-4 w-4 text-blue-600 focus:ring-blue-500">
+                                    <span class="ml-3 text-gray-700">Student</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Student-specific form fields (hidden by default) -->
+                    <div id="studentFields" class="hidden">
+                        <label for="classId" class="block text-sm font-medium text-gray-700">Class ID</label>
+                        <div class="mt-1">
+                            <input id="classId" name="classId" type="text" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <p class="mt-1 text-xs text-gray-500">Enter the Class ID provided by your teacher</p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Register
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="mt-6 text-center">
+                    <a href="login.html" class="text-sm text-blue-600 hover:text-blue-800">Already have an account? Sign in</a>
+                </div>
+                
+                <div id="errorMessage" class="mt-4 text-sm text-red-600 hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script src="js/firebase-init.js"></script>
+    <script>
+        // DOM elements
+        const registerForm = document.getElementById('registerForm');
+        const displayNameInput = document.getElementById('displayName');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const roleInputs = document.getElementsByName('role');
+        const studentFields = document.getElementById('studentFields');
+        const classIdInput = document.getElementById('classId');
+        const errorMessage = document.getElementById('errorMessage');
+        
+        // Show/hide student fields based on role selection
+        roleInputs.forEach(input => {
+            input.addEventListener('change', () => {
+                if (input.value === 'student') {
+                    studentFields.classList.remove('hidden');
+                    classIdInput.required = true;
+                } else {
+                    studentFields.classList.add('hidden');
+                    classIdInput.required = false;
+                }
+            });
+        });
+        
+        // Registration form submission
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Clear previous error
+            hideError();
+            
+            // Get form values
+            const displayName = displayNameInput.value.trim();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+            
+            // Get selected role
+            let role = 'student'; // Default
+            for (const input of roleInputs) {
+                if (input.checked) {
+                    role = input.value;
+                    break;
+                }
+            }
+            
+            // Validate form
+            if (password !== confirmPassword) {
+                showError('Passwords do not match');
+                return;
+            }
+            
+            // Additional validation for students
+            if (role === 'student' && !classIdInput.value.trim()) {
+                showError('Class ID is required for students');
+                return;
+            }
+            
+            try {
+                // Create user with email and password
+                const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                // Update user profile with display name
+                await user.updateProfile({
+                    displayName: displayName
+                });
+                
+                // Create user document in Firestore
+                const userData = {
+                    displayName: displayName,
+                    email: email,
+                    role: role,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                // Add class ID for students
+                if (role === 'student') {
+                    userData.classId = classIdInput.value.trim();
+                }
+                
+                // If teacher, create a class
+                if (role === 'teacher') {
+                    // Create a class document
+                    const classRef = await firebase.firestore().collection('classes').add({
+                        name: `${displayName}'s Class`,
+                        teacherId: user.uid,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    // Store the class ID with the teacher
+                    userData.classId = classRef.id;
+                }
+                
+                // Save user data to Firestore
+                await firebase.firestore().collection('users').doc(user.uid).set(userData);
+                
+                // Redirect based on role
+                if (role === 'teacher') {
+                    window.location.href = 'index.html';
+                } else {
+                    window.location.href = 'student.html';
+                }
+                
+            } catch (error) {
+                showError(error.message);
+            }
+        });
+        
+        // Show error message
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.remove('hidden');
+        }
+        
+        // Hide error message
+        function hideError() {
+            errorMessage.textContent = '';
+            errorMessage.classList.add('hidden');
+        }
+    </script>
+</body>
+</html> 
