@@ -83,6 +83,17 @@
                 </div>
             </div>
             
+            <!-- My Registered Events Section -->
+            <div id="myRegisteredEvents" class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">My Registered Events</h2>
+                <div id="registeredEventsList" class="space-y-3">
+                    <!-- Registered events will be loaded here -->
+                    <div class="text-center py-4 text-gray-500">
+                        <p>Loading your registered events...</p>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Active Filters Display -->
             <div id="activeFilters" class="mb-4 hidden">
                 <div class="flex items-center space-x-2 text-sm text-gray-600">
@@ -129,9 +140,17 @@
             const activeFilters = document.getElementById('activeFilters');
             const typeFilterBadge = document.getElementById('typeFilterBadge');
             const dateFilterBadge = document.getElementById('dateFilterBadge');
+            const registeredEventsList = document.getElementById('registeredEventsList');
+            
+            // Get current user
+            const userData = JSON.parse(sessionStorage.getItem('currentUser')) || {};
+            const userId = userData.uid || null;
             
             // Load events from shared storage
             const events = eventManager.loadEvents();
+            
+            // Load registered events
+            updateRegisteredEventsList();
             
             // Filter state
             let currentFilters = {
@@ -145,6 +164,64 @@
             
             // Initial render of events
             renderFilteredEvents();
+            
+            // Add notification container if it doesn't exist
+            if (!document.getElementById('notification')) {
+                const notificationContainer = document.createElement('div');
+                notificationContainer.id = 'notification';
+                notificationContainer.className = 'fixed bottom-4 right-4 max-w-md bg-white p-4 rounded-lg shadow-lg border-l-4 border-blue-500 transform transition-transform duration-300 translate-y-full opacity-0';
+                notificationContainer.innerHTML = `
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i id="notification-icon" class="fas fa-info-circle text-blue-500 text-xl"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h3 id="notification-title" class="text-sm font-medium text-gray-900">Notification Title</h3>
+                            <div id="notification-message" class="mt-1 text-sm text-gray-500">Notification message here.</div>
+                        </div>
+                        <div class="ml-auto pl-3">
+                            <button id="close-notification" class="inline-flex text-gray-400 hover:text-gray-500">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(notificationContainer);
+                
+                // Close notification when clicking the X button
+                document.getElementById('close-notification').addEventListener('click', () => {
+                    hideNotification();
+                });
+            }
+            
+            // Event delegation for registration buttons
+            eventsGrid.addEventListener('click', (e) => {
+                // Register button click
+                if (e.target.closest('.register-event-btn')) {
+                    const button = e.target.closest('.register-event-btn');
+                    const eventId = button.getAttribute('data-event-id');
+                    handleEventRegistration(eventId);
+                }
+                
+                // Cancel registration button click
+                if (e.target.closest('.cancel-registration-btn')) {
+                    const button = e.target.closest('.cancel-registration-btn');
+                    const eventId = button.getAttribute('data-event-id');
+                    handleCancelRegistration(eventId);
+                }
+            });
+            
+            // Event delegation for registered events list
+            if (registeredEventsList) {
+                registeredEventsList.addEventListener('click', (e) => {
+                    // Cancel registration button click in the registered events list
+                    if (e.target.closest('.cancel-registration-btn')) {
+                        const button = e.target.closest('.cancel-registration-btn');
+                        const eventId = button.getAttribute('data-event-id');
+                        handleCancelRegistration(eventId);
+                    }
+                });
+            }
             
             // Filter events by type
             eventTypeFilter.addEventListener('change', () => {
@@ -174,6 +251,71 @@
                 // Show feedback
                 showFilteringMessage('All filters reset', 1500);
             });
+            
+            // Update registered events list
+            function updateRegisteredEventsList() {
+                if (!registeredEventsList || !userId) return;
+                
+                // Load user registrations
+                const registeredEventIds = eventManager.loadUserRegistrations(userId);
+                
+                // If no registrations, show message
+                if (!registeredEventIds.length) {
+                    registeredEventsList.innerHTML = `
+                        <div class="text-center py-4 text-gray-500">
+                            <p>You haven't registered for any events yet.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Get full event details for each registered event
+                const registeredEvents = registeredEventIds.map(id => eventManager.getEventById(id)).filter(Boolean);
+                
+                // Sort events by date
+                registeredEvents.sort((a, b) => {
+                    return new Date(a.date) - new Date(b.date);
+                });
+                
+                // Render events as list items
+                registeredEventsList.innerHTML = registeredEvents.map(event => {
+                    const colorScheme = eventManager.EVENT_COLORS[event.type] || eventManager.EVENT_COLORS['activity'];
+                    const icon = eventManager.EVENT_ICONS[event.type] || 'fa-calendar-alt';
+                    
+                    // Format date display
+                    let dateDisplay = formatEventDate(event.date, event.endDate);
+                    if (event.time) {
+                        const timeDisplay = event.endTime ? 
+                            `${event.time} - ${event.endTime}` : 
+                            event.time;
+                        dateDisplay += ` • ${timeDisplay}`;
+                    }
+                    
+                    return `
+                        <div class="flex bg-gray-50 rounded-lg p-3 ${colorScheme.border}" data-event-id="${event.id}">
+                            <div class="${colorScheme.icon.split(' ')[0]} p-2 rounded-full h-min">
+                                <i class="fas ${icon} ${colorScheme.icon.split(' ')[1]}"></i>
+                            </div>
+                            <div class="ml-3 flex-1">
+                                <h3 class="font-medium text-gray-800">${event.title}</h3>
+                                <div class="flex flex-wrap gap-y-1 gap-x-3 mt-1 text-sm text-gray-600">
+                                    <span class="flex items-center">
+                                        <i class="fas fa-calendar-day mr-1 text-gray-500"></i> ${dateDisplay}
+                                    </span>
+                                    <span class="flex items-center">
+                                        <i class="fas fa-map-marker-alt mr-1 text-gray-500"></i> ${event.location}
+                                    </span>
+                                </div>
+                                <div class="mt-2">
+                                    <button class="cancel-registration-btn text-sm text-gray-600 hover:text-red-600 flex items-center" data-event-id="${event.id}">
+                                        <i class="fas fa-calendar-times mr-1"></i> Cancel Registration
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
             
             // Initialize calendar
             function initCalendar() {
@@ -279,55 +421,65 @@
                 }
             }
             
-            // Apply combined filters and render events
-            function renderFilteredEvents() {
-                let filteredEvents = [...events];
+            // Format date helper function
+            function formatEventDate(dateStr, endDateStr = null) {
+                const date = new Date(dateStr);
                 
-                // Apply type filter if not 'all'
-                if (currentFilters.type !== 'all') {
-                    filteredEvents = filteredEvents.filter(event => event.type === currentFilters.type);
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                let formatted = date.toLocaleDateString('en-US', options);
+                
+                if (endDateStr) {
+                    const endDate = new Date(endDateStr);
+                    const endDay = endDate.getDate();
+                    const sameMonth = date.getMonth() === endDate.getMonth();
+                    const sameYear = date.getFullYear() === endDate.getFullYear();
+                    
+                    if (sameMonth && sameYear) {
+                        // Format as "May 17-18, 2023"
+                        const monthName = date.toLocaleDateString('en-US', { month: 'long' });
+                        formatted = `${monthName} ${date.getDate()}-${endDay}, ${date.getFullYear()}`;
+                    } else {
+                        // Different months or years
+                        formatted = `${formatted} - ${endDate.toLocaleDateString('en-US', options)}`;
+                    }
                 }
                 
-                // Apply date filter if set
-                if (currentFilters.date) {
-                    const selectedDate = new Date(currentFilters.date);
-                    filteredEvents = filteredEvents.filter(event => {
-                        const eventDate = new Date(event.date);
+                return formatted;
+            }
+            
+            // Render filtered events
+            function renderFilteredEvents() {
+                // Filter events based on current filters
+                let filteredEvents = events.filter(event => {
+                    // Filter by type
+                    if (currentFilters.type !== 'all' && event.type !== currentFilters.type) {
+                        return false;
+                    }
+                    
+                    // Filter by date
+                    if (currentFilters.date) {
+                        // Check if event is on the selected date, or selected date is within range of multi-day event
+                        const eventStartDate = event.date;
+                        const eventEndDate = event.endDate || event.date;
                         
-                        // Single day event match
-                        if (!event.endDate && eventDate.toISOString().split('T')[0] === currentFilters.date) {
+                        // Check if filter date is within event dates
+                        if (eventStartDate <= currentFilters.date && eventEndDate >= currentFilters.date) {
                             return true;
                         }
                         
-                        // Multi-day event that includes the selected date
-                        if (event.endDate) {
-                            const endDate = new Date(event.endDate);
-                            return selectedDate >= eventDate && selectedDate <= endDate;
-                        }
-                        
                         return false;
-                    });
-                }
-                
-                // Render the filtered events
-                if (filteredEvents.length === 0) {
-                    let message = 'No events found';
-                    
-                    if (currentFilters.type !== 'all' && currentFilters.date) {
-                        message = `No ${currentFilters.type} events found for the selected date`;
-                    } else if (currentFilters.type !== 'all') {
-                        message = `No ${currentFilters.type} events found`;
-                    } else if (currentFilters.date) {
-                        const formattedDate = new Date(currentFilters.date).toLocaleDateString('en-US', {
-                            year: 'numeric', month: 'long', day: 'numeric'
-                        });
-                        message = `No events found for ${formattedDate}`;
                     }
                     
+                    return true;
+                });
+                
+                // Check if we have results
+                if (filteredEvents.length === 0) {
                     eventsGrid.innerHTML = `
-                        <div class="col-span-3 text-center py-8 text-gray-500">
-                            <i class="fas fa-calendar-times text-xl mb-2"></i>
-                            <p>${message}</p>
+                        <div class="col-span-3 text-center py-12 bg-white rounded-lg shadow-sm">
+                            <i class="fas fa-calendar-times text-gray-400 text-5xl mb-4"></i>
+                            <h3 class="text-xl font-medium text-gray-900 mb-2">No events found</h3>
+                            <p class="text-gray-500">Try changing your filters or check back later.</p>
                         </div>
                     `;
                 } else {
@@ -335,12 +487,12 @@
                 }
             }
             
-            // Update the filter badges display
+            // Update filter display badges
             function updateFilterDisplay() {
                 // Check if any filters are active
                 const hasActiveFilters = currentFilters.type !== 'all' || currentFilters.date !== null;
                 
-                // Show/hide the active filters section
+                // Show/hide the active filters container
                 activeFilters.classList.toggle('hidden', !hasActiveFilters);
                 
                 // Update type filter badge
@@ -353,8 +505,11 @@
                 
                 // Update date filter badge
                 if (currentFilters.date) {
-                    const formattedDate = new Date(currentFilters.date).toLocaleDateString('en-US', {
-                        year: 'numeric', month: 'long', day: 'numeric'
+                    const date = new Date(currentFilters.date);
+                    const formattedDate = date.toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
                     });
                     dateFilterBadge.textContent = `Date: ${formattedDate}`;
                     dateFilterBadge.classList.remove('hidden');
@@ -363,30 +518,123 @@
                 }
             }
             
-            // Display a filtering message to provide visual feedback
-            function showFilteringMessage(message, duration = 0) {
-                // Remove any existing message
-                removeFilteringMessage();
+            // Handler for event registration
+            function handleEventRegistration(eventId) {
+                // Get user data
+                const userData = JSON.parse(sessionStorage.getItem('currentUser'));
                 
-                // Create a new message element
-                const messageElement = document.createElement('div');
-                messageElement.id = 'filtering-message';
-                messageElement.className = 'fixed top-4 right-4 bg-blue-100 text-blue-800 px-4 py-2 rounded-md shadow-md z-50';
-                messageElement.textContent = message;
-                document.body.appendChild(messageElement);
+                if (!userData || !userData.uid) {
+                    showNotification('Error', 'You must be logged in to register for events', 'error');
+                    return;
+                }
                 
-                // Remove after duration (if specified)
-                if (duration > 0) {
-                    setTimeout(removeFilteringMessage, duration);
+                // Get event details
+                const event = eventManager.getEventById(eventId);
+                
+                if (!event) {
+                    showNotification('Error', 'Event not found', 'error');
+                    return;
+                }
+                
+                // Register for the event
+                const success = eventManager.registerForEvent(userData.uid, eventId);
+                
+                if (success) {
+                    showNotification('Registration Successful', `You are now registered for ${event.title}`, 'success');
+                    // Refresh the events display
+                    renderFilteredEvents();
+                    // Update registered events list
+                    updateRegisteredEventsList();
+                } else {
+                    showNotification('Registration Failed', 'You are already registered for this event', 'warning');
                 }
             }
             
-            // Remove the filtering message
-            function removeFilteringMessage() {
-                const messageElement = document.getElementById('filtering-message');
-                if (messageElement) {
-                    messageElement.remove();
+            // Handler for canceling registration
+            function handleCancelRegistration(eventId) {
+                // Get user data
+                const userData = JSON.parse(sessionStorage.getItem('currentUser'));
+                
+                if (!userData || !userData.uid) {
+                    showNotification('Error', 'You must be logged in to manage registrations', 'error');
+                    return;
                 }
+                
+                // Get event details
+                const event = eventManager.getEventById(eventId);
+                
+                if (!event) {
+                    showNotification('Error', 'Event not found', 'error');
+                    return;
+                }
+                
+                // Cancel the registration
+                const success = eventManager.cancelEventRegistration(userData.uid, eventId);
+                
+                if (success) {
+                    showNotification('Registration Canceled', `You have canceled your registration for ${event.title}`, 'info');
+                    // Refresh the events display
+                    renderFilteredEvents();
+                    // Update registered events list
+                    updateRegisteredEventsList();
+                } else {
+                    showNotification('Error', 'You are not registered for this event', 'warning');
+                }
+            }
+            
+            // Show a notification message
+            function showNotification(title, message, type = 'info') {
+                const notification = document.getElementById('notification');
+                const notificationTitle = document.getElementById('notification-title');
+                const notificationMessage = document.getElementById('notification-message');
+                const notificationIcon = document.getElementById('notification-icon');
+                
+                // Set content
+                notificationTitle.textContent = title;
+                notificationMessage.textContent = message;
+                
+                // Set styles based on type
+                notification.classList.remove('border-blue-500', 'border-green-500', 'border-yellow-500', 'border-red-500');
+                notificationIcon.classList.remove('text-blue-500', 'text-green-500', 'text-yellow-500', 'text-red-500', 
+                                                'fa-info-circle', 'fa-check-circle', 'fa-exclamation-circle', 'fa-times-circle');
+                
+                switch (type) {
+                    case 'success':
+                        notification.classList.add('border-green-500');
+                        notificationIcon.classList.add('text-green-500', 'fa-check-circle');
+                        break;
+                    case 'warning':
+                        notification.classList.add('border-yellow-500');
+                        notificationIcon.classList.add('text-yellow-500', 'fa-exclamation-circle');
+                        break;
+                    case 'error':
+                        notification.classList.add('border-red-500');
+                        notificationIcon.classList.add('text-red-500', 'fa-times-circle');
+                        break;
+                    default:
+                        notification.classList.add('border-blue-500');
+                        notificationIcon.classList.add('text-blue-500', 'fa-info-circle');
+                }
+                
+                // Show notification
+                notification.classList.remove('translate-y-full', 'opacity-0');
+                
+                // Hide after 5 seconds
+                clearTimeout(window.notificationTimeout);
+                window.notificationTimeout = setTimeout(hideNotification, 5000);
+            }
+            
+            // Hide notification
+            function hideNotification() {
+                const notification = document.getElementById('notification');
+                if (notification) {
+                    notification.classList.add('translate-y-full', 'opacity-0');
+                }
+            }
+            
+            // Show filtering message
+            function showFilteringMessage(message, duration = 2000) {
+                showNotification('Filter Update', message, 'info');
             }
             
             // Handle logout

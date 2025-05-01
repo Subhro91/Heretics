@@ -309,6 +309,13 @@ function renderTeacherEventCards(events) {
 
 // Get events as HTML cards for the student dashboard (without edit/delete buttons)
 function renderStudentEventCards(events) {
+  // Get current user ID
+  const currentUser = JSON.parse(sessionStorage.getItem('currentUser')) || {};
+  const userId = currentUser.uid || null;
+  
+  // Load user's registered events
+  const userRegistrations = loadUserRegistrations(userId);
+  
   return events.map(event => {
     const colorScheme = EVENT_COLORS[event.type] || EVENT_COLORS['activity'];
     const icon = EVENT_ICONS[event.type] || 'fa-calendar-alt';
@@ -321,6 +328,9 @@ function renderStudentEventCards(events) {
         event.time;
       dateDisplay += ` • ${timeDisplay}`;
     }
+    
+    // Check if user is registered for this event
+    const isRegistered = userRegistrations.includes(event.id);
     
     // Set data attribute for filtering
     const dataType = `data-event-type="${event.type}"`;
@@ -354,15 +364,109 @@ function renderStudentEventCards(events) {
             ${event.description}
           </p>
           ${event.notes ? `
-          <div class="bg-yellow-50 p-3 rounded-md text-sm">
+          <div class="bg-yellow-50 p-3 rounded-md text-sm mb-4">
             <i class="fas fa-exclamation-circle text-yellow-600 mr-2"></i>
             <span class="text-yellow-700">${event.notes}</span>
           </div>
           ` : ''}
+          
+          <!-- Registration Button -->
+          <div class="mt-4">
+            ${isRegistered ? 
+              `<button class="cancel-registration-btn w-full bg-gray-200 text-gray-800 py-2 px-4 rounded-md font-medium hover:bg-gray-300 flex items-center justify-center" data-event-id="${event.id}">
+                <i class="fas fa-calendar-times mr-2"></i> Cancel Registration
+               </button>` : 
+              `<button class="register-event-btn w-full bg-blue-600 text-white py-2 px-4 rounded-md font-medium hover:bg-blue-700 flex items-center justify-center" data-event-id="${event.id}">
+                <i class="fas fa-calendar-check mr-2"></i> Register for Event
+               </button>`
+            }
+          </div>
         </div>
       </div>
     `;
   }).join('');
+}
+
+// Load user event registrations
+function loadUserRegistrations(userId) {
+  if (!userId) return [];
+  
+  // Try to get from session storage first
+  const storedRegistrations = sessionStorage.getItem(`registrations_${userId}`);
+  if (storedRegistrations) {
+    return JSON.parse(storedRegistrations);
+  }
+  
+  // If not found, return empty array
+  // In a real app, this would fetch from Firestore
+  return [];
+}
+
+// Register user for an event
+function registerForEvent(userId, eventId) {
+  if (!userId) return false;
+  
+  // Get current registrations
+  let registrations = loadUserRegistrations(userId);
+  
+  // Add new registration if not already registered
+  if (!registrations.includes(eventId)) {
+    registrations.push(eventId);
+    
+    // Save to session storage
+    sessionStorage.setItem(`registrations_${userId}`, JSON.stringify(registrations));
+    
+    // In a real app, would also save to Firestore
+    try {
+      // If Firestore is available, save there too
+      if (window.db) {
+        window.db.collection('event_registrations').doc(userId).set({
+          events: registrations
+        }, { merge: true })
+        .catch(error => console.error('Error saving registration to Firestore:', error));
+      }
+    } catch (error) {
+      console.error('Error saving registration:', error);
+    }
+    
+    return true;
+  }
+  
+  return false;
+}
+
+// Cancel an event registration
+function cancelEventRegistration(userId, eventId) {
+  if (!userId) return false;
+  
+  // Get current registrations
+  let registrations = loadUserRegistrations(userId);
+  
+  // Remove registration if found
+  const index = registrations.indexOf(eventId);
+  if (index > -1) {
+    registrations.splice(index, 1);
+    
+    // Save to session storage
+    sessionStorage.setItem(`registrations_${userId}`, JSON.stringify(registrations));
+    
+    // In a real app, would also update Firestore
+    try {
+      // If Firestore is available, update there too
+      if (window.db) {
+        window.db.collection('event_registrations').doc(userId).set({
+          events: registrations
+        }, { merge: true })
+        .catch(error => console.error('Error updating registration in Firestore:', error));
+      }
+    } catch (error) {
+      console.error('Error canceling registration:', error);
+    }
+    
+    return true;
+  }
+  
+  return false;
 }
 
 // Populate edit form with event data
@@ -433,6 +537,9 @@ window.eventManager = {
   createCalendarEvents,
   populateEventForm,
   clearEventForm,
+  loadUserRegistrations,
+  registerForEvent,
+  cancelEventRegistration,
   EVENT_COLORS,
   EVENT_ICONS
 }; 

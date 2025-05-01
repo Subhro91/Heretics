@@ -60,4 +60,36 @@ body {
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
   margin-bottom: 1rem;
+}
+
+/* Notification Styles */
+#notification {
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    z-index: 50;
+}
+
+#notification.translate-y-full {
+    transform: translateY(100%);
+}
+
+#notification.opacity-0 {
+    opacity: 0;
+}
+
+/* Event Registration Button Transitions */
+.register-event-btn, .cancel-registration-btn {
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* Calendar Event Dots Enhancement */
+.flatpickr-day.has-event .dot-container {
+    margin-top: 2px;
+}
+
+.flatpickr-day.has-event .event-dot {
+    transition: transform 0.2s ease-in-out;
+}
+
+.flatpickr-day.has-event:hover .event-dot {
+    transform: scale(1.5);
 } 
