@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brainware University Dashboard - Hostel</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .stat-card {
+            transition: transform 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        .reservation-card {
+            transition: all 0.3s;
+        }
+        .reservation-card:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .chart-bar {
+            height: 100px;
+            display: inline-block;
+            width: 15px;
+            margin: 0 5px;
+            border-radius: 4px;
+            position: relative;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="sidebar bg-white shadow-md flex flex-col">
+            <!-- Logo -->
+            <div class="p-6 border-b">
+                <h1 class="text-xl font-bold text-blue-600">Brainware University Dashboard</h1>
+            </div>
+            
+            <!-- Navigation Links -->
+            <nav class="flex-1">
+                <ul class="py-4">
+                    <li>
+                        <a href="student.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-calendar-check mr-3"></i>
+                            <span>My Attendance</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="student-events.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-calendar-alt mr-3"></i>
+                            <span>Upcoming Events</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="student-classes.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-chalkboard mr-3"></i>
+                            <span>Upcoming Classes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="student-tickets.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-ticket-alt mr-3"></i>
+                            <span>Tickets</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="hostel.html" class="flex items-center px-6 py-3 text-gray-700 active-link">
+                            <i class="fas fa-bed mr-3"></i>
+                            <span>Hostel</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="library.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-book mr-3"></i>
+                            <span>Library</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Log Out Button -->
+            <div class="p-6 border-t">
+                <button id="logoutBtn" class="flex items-center text-gray-700">
+                    <i class="fas fa-sign-out-alt mr-3"></i>
+                    <span>Log Out</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content p-8">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800">HoMS Dashboard</h1>
+                    <p id="welcomeMessage" class="text-gray-500 text-lg">Welcome, loading...</p>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 bg-white rounded-full shadow">
+                        <i class="fas fa-bell text-gray-600"></i>
+                    </button>
+                    <button class="p-2 bg-white rounded-full shadow">
+                        <i class="fas fa-user text-gray-600"></i>
+                    </button>
+                    <div class="bg-red-600 text-white px-4 py-2 rounded-md font-medium">
+                        LKR 5 000
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Statistics Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Hostel Students Count -->
+                <div class="bg-pink-50 p-6 rounded-lg shadow-sm stat-card">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-pink-100 p-3 rounded-full">
+                            <i class="fas fa-lightbulb text-pink-500"></i>
+                        </div>
+                        <h2 class="ml-4 text-xl font-semibold text-gray-800">Hostel Students Count</h2>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="text-5xl font-bold text-gray-800">267</div>
+                        <div class="mx-4 text-2xl font-bold text-gray-400">|</div>
+                        <div>
+                            <div class="text-5xl font-bold text-gray-800">57</div>
+                            <div class="text-sm text-gray-600">Rooms Booked</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Hostel Traffic -->
+                <div class="bg-pink-50 p-6 rounded-lg shadow-sm stat-card">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-pink-100 p-3 rounded-full">
+                            <i class="fas fa-chart-bar text-pink-500"></i>
+                        </div>
+                        <h2 class="ml-4 text-xl font-semibold text-gray-800">Hostel Traffic</h2>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <!-- Simple chart visualization -->
+                        <div class="chart-bar bg-gray-800" style="height: 60px;"></div>
+                        <div class="chart-bar bg-red-400" style="height: 90px;"></div>
+                        <div class="chart-bar bg-gray-800" style="height: 30px;"></div>
+                        <div class="chart-bar bg-red-400" style="height: 75px;"></div>
+                        <div class="chart-bar bg-gray-800" style="height: 40px;"></div>
+                        <div class="chart-bar bg-red-400" style="height: 60px;"></div>
+                        <div class="chart-bar bg-gray-800" style="height: 85px;"></div>
+                        <div class="chart-bar bg-red-400" style="height: 40px;"></div>
+                        <div class="chart-bar bg-gray-800" style="height: 55px;"></div>
+                        <div class="chart-bar bg-red-400" style="height: 30px;"></div>
+                        <div class="chart-bar bg-gray-800" style="height: 70px;"></div>
+                        <div class="chart-bar bg-red-400" style="height: 45px;"></div>
+                        <div class="chart-bar bg-gray-800" style="height: 60px;"></div>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-500 mt-2">
+                        <span>7</span>
+                        <span>8</span>
+                        <span>9</span>
+                        <span>10</span>
+                        <span>11</span>
+                        <span>12</span>
+                        <span>13</span>
+                        <span>14</span>
+                        <span>15</span>
+                        <span>16</span>
+                        <span>17</span>
+                        <span>18</span>
+                        <span>19</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ongoing Reservations -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Your Ongoing Reservations</h2>
+                
+                <!-- Reservation Cards -->
+                <div class="space-y-4">
+                    <!-- Card 1 -->
+                    <div class="bg-white shadow-sm rounded-lg p-4 reservation-card">
+                        <div class="flex">
+                            <div class="w-1/4 p-6 bg-gray-100 flex flex-col items-center justify-center rounded-l-lg">
+                                <div class="text-5xl font-bold text-gray-800">305</div>
+                                <div class="text-sm text-gray-600">Room Number</div>
+                            </div>
+                            <div class="w-3/4 pl-6 pr-4 py-4 flex flex-col justify-between">
+                                <div class="space-y-4">
+                                    <div class="flex justify-between">
+                                        <div class="text-sm text-gray-600">Reservation Period</div>
+                                        <div class="text-sm font-medium">: 2022 JAN 25 - 2022 FEB 10</div>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <div class="text-sm text-gray-600">Room Type</div>
+                                        <div class="text-sm font-medium">: Four Sharing</div>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <div class="text-sm text-gray-600">Room Cleaning</div>
+                                        <div class="text-sm font-medium">: Requested on 2022 JAN 25 at 9.00 AM</div>
+                                    </div>
+                                </div>
+                                <div class="text-right mt-4">
+                                    <button class="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 2 -->
+                    <div class="bg-white shadow-sm rounded-lg p-4 reservation-card">
+                        <div class="flex">
+                            <div class="w-1/4 p-6 bg-gray-100 flex flex-col items-center justify-center rounded-l-lg">
+                                <div class="text-5xl font-bold text-gray-800">218</div>
+                                <div class="text-sm text-gray-600">Room Number</div>
+                            </div>
+                            <div class="w-3/4 pl-6 pr-4 py-4 flex flex-col justify-between">
+                                <div class="space-y-4">
+                                    <div class="flex justify-between">
+                                        <div class="text-sm text-gray-600">Reservation Period</div>
+                                        <div class="text-sm font-medium">: 2022 FEB 25 - 2022 MAR 10</div>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <div class="text-sm text-gray-600">Room Type</div>
+                                        <div class="text-sm font-medium">: Four Sharing</div>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <div class="text-sm text-gray-600">Room Cleaning</div>
+                                        <div class="text-sm font-medium">: Requested on 2022 FEB 25 at 12.00 PM</div>
+                                    </div>
+                                </div>
+                                <div class="text-right mt-4">
+                                    <button class="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Room Booking & Services -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Book a Room Card -->
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-blue-100 p-3 rounded-full">
+                            <i class="fas fa-bed text-blue-600"></i>
+                        </div>
+                        <h2 class="ml-4 text-xl font-semibold text-gray-800">Book a Room</h2>
+                    </div>
+                    <p class="text-gray-600 mb-4">Select a room type and booking period to reserve your accommodation.</p>
+                    <button class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors">
+                        Book Now
+                    </button>
+                </div>
+                
+                <!-- Services Card -->
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <i class="fas fa-broom text-green-600"></i>
+                        </div>
+                        <h2 class="ml-4 text-xl font-semibold text-gray-800">Cleaning Service</h2>
+                    </div>
+                    <p class="text-gray-600 mb-4">Request cleaning service for your room at your preferred time slot.</p>
+                    <button class="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition-colors">
+                        Request Cleaning
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script src="js/firebase-init.js"></script>
+    <script src="js/auth.js"></script>
+    
+    <script>
+        // Display welcome message
+        document.addEventListener('DOMContentLoaded', () => {
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            const userData = JSON.parse(sessionStorage.getItem('currentUser')) || { role: 'student', displayName: 'User' };
+            
+            if (welcomeMessage && userData) {
+                welcomeMessage.textContent = `Welcome, ${userData.displayName}!`;
+            }
+            
+            // Simulate user profile image
+            const userImage = document.getElementById('userImage');
+            if (userImage) {
+                // In a real app, you would get the user's profile image from the user data
+                // userImage.src = userData.photoURL || 'default-profile.jpg';
+            }
+            
+            // Logout functionality
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    firebase.auth().signOut().then(() => {
+                        sessionStorage.removeItem('currentUser');
+                        window.location.href = 'login.html';
+                    }).catch(error => {
+                        console.error('Error signing out:', error);
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brainware University Dashboard - Library</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .stat-card {
+            transition: transform 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        .book-card {
+            transition: all 0.3s;
+        }
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        .table-row {
+            transition: background-color 0.2s;
+        }
+        .table-row:hover {
+            background-color: #f9fafb;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="sidebar bg-white shadow-md flex flex-col">
+            <!-- Logo -->
+            <div class="p-6 border-b">
+                <h1 class="text-xl font-bold text-blue-600">Brainware University Dashboard</h1>
+            </div>
+            
+            <!-- Navigation Links -->
+            <nav class="flex-1">
+                <ul class="py-4">
+                    <li>
+                        <a href="student.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-calendar-check mr-3"></i>
+                            <span>My Attendance</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="student-events.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-calendar-alt mr-3"></i>
+                            <span>Upcoming Events</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="student-classes.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-chalkboard mr-3"></i>
+                            <span>Upcoming Classes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="student-tickets.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-ticket-alt mr-3"></i>
+                            <span>Tickets</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="hostel.html" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-bed mr-3"></i>
+                            <span>Hostel</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="library.html" class="flex items-center px-6 py-3 text-gray-700 active-link">
+                            <i class="fas fa-book mr-3"></i>
+                            <span>Library</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Log Out Button -->
+            <div class="p-6 border-t">
+                <button id="logoutBtn" class="flex items-center text-gray-700">
+                    <i class="fas fa-sign-out-alt mr-3"></i>
+                    <span>Log Out</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content p-8">
+            <!-- Header -->
+            <div class="flex items-center mb-6">
+                <div class="bg-red-100 p-3 rounded-lg mr-4">
+                    <i class="fas fa-book text-red-500 text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Hello, <span id="userName" class="text-red-500">Arafat!</span></h1>
+                    <p class="text-gray-500">Jan 12, 2023 | Thursday, 11:00 AM</p>
+                </div>
+            </div>
+            
+            <!-- Search Bar -->
+            <div class="relative mb-8">
+                <input type="text" placeholder="Search..." class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button class="absolute right-2 top-2 text-gray-500">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            
+            <!-- Statistics Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <!-- Total Visitors -->
+                <div class="bg-white p-4 rounded-lg shadow-sm stat-card">
+                    <div class="flex justify-between">
+                        <div>
+                            <div class="text-3xl font-bold text-gray-800">1223</div>
+                            <div class="text-sm text-gray-600">Total Visitors</div>
+                        </div>
+                        <div class="bg-red-100 h-10 w-10 rounded-full flex items-center justify-center">
+                            <i class="fas fa-users text-red-500"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Borrowed Books -->
+                <div class="bg-white p-4 rounded-lg shadow-sm stat-card">
+                    <div class="flex justify-between">
+                        <div>
+                            <div class="text-3xl font-bold text-gray-800">740</div>
+                            <div class="text-sm text-gray-600">Borrowed Books</div>
+                        </div>
+                        <div class="bg-red-100 h-10 w-10 rounded-full flex items-center justify-center">
+                            <i class="fas fa-book-open text-red-500"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Overdue Books -->
+                <div class="bg-white p-4 rounded-lg shadow-sm stat-card">
+                    <div class="flex justify-between">
+                        <div>
+                            <div class="text-3xl font-bold text-gray-800">22</div>
+                            <div class="text-sm text-gray-600">Overdue Books</div>
+                        </div>
+                        <div class="bg-red-100 h-10 w-10 rounded-full flex items-center justify-center">
+                            <i class="fas fa-exclamation-circle text-red-500"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- New Members -->
+                <div class="bg-white p-4 rounded-lg shadow-sm stat-card">
+                    <div class="flex justify-between">
+                        <div>
+                            <div class="text-3xl font-bold text-gray-800">60</div>
+                            <div class="text-sm text-gray-600">New Members</div>
+                        </div>
+                        <div class="bg-red-100 h-10 w-10 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user-plus text-red-500"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Users and Books List -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Users List -->
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-semibold text-gray-800">Users List</h2>
+                        <button class="bg-blue-50 text-blue-600 px-4 py-1 rounded-md text-sm">
+                            Add New User
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead>
+                                <tr class="border-b">
+                                    <th class="text-left text-xs text-gray-600 py-2">User ID</th>
+                                    <th class="text-left text-xs text-gray-600 py-2">User Name</th>
+                                    <th class="text-left text-xs text-gray-600 py-2">Book Issued</th>
+                                    <th class="text-left text-xs text-gray-600 py-2">Department</th>
+                                    <th class="text-left text-xs text-gray-600 py-2">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b table-row">
+                                    <td class="py-3 text-sm text-gray-800">10021</td>
+                                    <td class="py-3 text-sm text-gray-800 flex items-center">
+                                        <div class="h-6 w-6 rounded-full bg-gray-200 mr-2 overflow-hidden">
+                                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Avatar">
+                                        </div>
+                                        Alex Roy
+                                    </td>
+                                    <td class="py-3 text-sm text-gray-800">12</td>
+                                    <td class="py-3 text-sm text-gray-800">Psychology</td>
+                                    <td class="py-3 text-sm text-gray-500">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </td>
+                                </tr>
+                                <tr class="border-b table-row">
+                                    <td class="py-3 text-sm text-gray-800">10234</td>
+                                    <td class="py-3 text-sm text-gray-800 flex items-center">
+                                        <div class="h-6 w-6 rounded-full bg-gray-200 mr-2 overflow-hidden">
+                                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Avatar">
+                                        </div>
+                                        Sophia
+                                    </td>
+                                    <td class="py-3 text-sm text-gray-800">07</td>
+                                    <td class="py-3 text-sm text-gray-800">Business</td>
+                                    <td class="py-3 text-sm text-gray-500">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </td>
+                                </tr>
+                                <tr class="border-b table-row">
+                                    <td class="py-3 text-sm text-gray-800">22987</td>
+                                    <td class="py-3 text-sm text-gray-800 flex items-center">
+                                        <div class="h-6 w-6 rounded-full bg-gray-200 mr-2 overflow-hidden">
+                                            <img src="https://randomuser.me/api/portraits/men/55.jpg" alt="Avatar">
+                                        </div>
+                                        Jhon
+                                    </td>
+                                    <td class="py-3 text-sm text-gray-800">17</td>
+                                    <td class="py-3 text-sm text-gray-800">Computer Science</td>
+                                    <td class="py-3 text-sm text-gray-500">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </td>
+                                </tr>
+                                <tr class="border-b table-row">
+                                    <td class="py-3 text-sm text-gray-800">53272</td>
+                                    <td class="py-3 text-sm text-gray-800 flex items-center">
+                                        <div class="h-6 w-6 rounded-full bg-gray-200 mr-2 overflow-hidden">
+                                            <img src="https://randomuser.me/api/portraits/women/22.jpg" alt="Avatar">
+                                        </div>
+                                        Rose
+                                    </td>
+                                    <td class="py-3 text-sm text-gray-800">25</td>
+                                    <td class="py-3 text-sm text-gray-800">Pharmacy</td>
+                                    <td class="py-3 text-sm text-gray-500">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Books List -->
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-semibold text-gray-800">Books List</h2>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead>
+                                <tr class="border-b">
+                                    <th class="text-left text-xs text-gray-600 py-2">Book ID</th>
+                                    <th class="text-left text-xs text-gray-600 py-2">Title</th>
+                                    <th class="text-left text-xs text-gray-600 py-2">Author</th>
+                                    <th class="text-left text-xs text-gray-600 py-2">Available</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b table-row">
+                                    <td class="py-3 text-sm text-gray-800">BB-10021-35</td>
+                                    <td class="py-3 text-sm text-gray-800">Ancestor Trouble</td>
+                                    <td class="py-3 text-sm text-gray-800">Maud Newton</td>
+                                    <td class="py-3 text-sm text-gray-800">30</td>
+                                </tr>
+                                <tr class="border-b table-row">
+                                    <td class="py-3 text-sm text-gray-800">BB-23429-31</td>
+                                    <td class="py-3 text-sm text-gray-800">Life Is Everywhere</td>
+                                    <td class="py-3 text-sm text-gray-800">Lucy Ives</td>
+                                    <td class="py-3 text-sm text-gray-800">23</td>
+                                </tr>
+                                <tr class="border-b table-row">
+                                    <td class="py-3 text-sm text-gray-800">BB-95561-31</td>
+                                    <td class="py-3 text-sm text-gray-800">Stoner</td>
+                                    <td class="py-3 text-sm text-gray-800">Amanda Parrish</td>
+                                    <td class="py-3 text-sm text-gray-800">50</td>
+                                </tr>
+                                <tr class="border-b table-row">
+                                    <td class="py-3 text-sm text-gray-800">BB-77351-67</td>
+                                    <td class="py-3 text-sm text-gray-800">The Secret Syllabus</td>
+                                    <td class="py-3 text-sm text-gray-800">Terence C. Burnham</td>
+                                    <td class="py-3 text-sm text-gray-800">05</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="text-right mt-3">
+                            <button class="text-red-500 text-sm hover:underline">See All</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Top Choices -->
+            <div class="mb-8">
+                <h2 class="text-xl font-bold text-gray-800 mb-6">Top Choices</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
+                    <!-- Book 1 -->
+                    <div class="book-card">
+                        <div class="h-56 rounded-lg overflow-hidden shadow-md mb-2 bg-blue-800 flex items-center justify-center relative">
+                            <div class="absolute inset-0 bg-blue-800 opacity-90"></div>
+                            <div class="text-white text-center z-10 p-4">
+                                <div class="text-xl font-bold">The Critique of Pure Reason</div>
+                                <div class="text-sm mt-2">Immanuel Kant</div>
+                            </div>
+                        </div>
+                        <h3 class="text-sm font-medium text-gray-800">The Critique of Pure Reason</h3>
+                    </div>
+                    
+                    <!-- Book 2 -->
+                    <div class="book-card">
+                        <div class="h-56 rounded-lg overflow-hidden shadow-md mb-2 bg-red-800 flex items-center justify-center relative">
+                            <div class="absolute inset-0 bg-red-800 opacity-90"></div>
+                            <div class="text-white text-center z-10 p-4">
+                                <div class="text-xl font-bold">Stroller</div>
+                                <div class="text-sm mt-2">Author Name</div>
+                            </div>
+                        </div>
+                        <h3 class="text-sm font-medium text-gray-800">Stroller</h3>
+                    </div>
+                    
+                    <!-- Book 3 -->
+                    <div class="book-card">
+                        <div class="h-56 rounded-lg overflow-hidden shadow-md mb-2 bg-yellow-700 flex items-center justify-center relative">
+                            <div class="absolute inset-0 bg-yellow-700 opacity-90"></div>
+                            <div class="text-white text-center z-10 p-4">
+                                <div class="text-xl font-bold">The Design of Everyday Things</div>
+                                <div class="text-sm mt-2">Don Norman</div>
+                            </div>
+                        </div>
+                        <h3 class="text-sm font-medium text-gray-800">The Design of Everyday Things</h3>
+                    </div>
+                    
+                    <!-- Book 4 -->
+                    <div class="book-card">
+                        <div class="h-56 rounded-lg overflow-hidden shadow-md mb-2 bg-blue-500 flex items-center justify-center relative">
+                            <div class="absolute inset-0 bg-blue-500 opacity-90"></div>
+                            <div class="text-white text-center z-10 p-4">
+                                <div class="text-xl font-bold">Lean UX</div>
+                                <div class="text-sm mt-2">Jeff Gothelf</div>
+                            </div>
+                        </div>
+                        <h3 class="text-sm font-medium text-gray-800">Lean UX</h3>
+                    </div>
+                    
+                    <!-- Book 5 -->
+                    <div class="book-card">
+                        <div class="h-56 rounded-lg overflow-hidden shadow-md mb-2 bg-red-600 flex items-center justify-center relative">
+                            <div class="absolute inset-0 bg-red-600 opacity-90"></div>
+                            <div class="text-white text-center z-10 p-4">
+                                <div class="text-xl font-bold">The Republic</div>
+                                <div class="text-sm mt-2">Plato</div>
+                            </div>
+                        </div>
+                        <h3 class="text-sm font-medium text-gray-800">The Republic</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script src="js/firebase-init.js"></script>
+    <script src="js/auth.js"></script>
+    
+    <script>
+        // Display user name
+        document.addEventListener('DOMContentLoaded', () => {
+            const userName = document.getElementById('userName');
+            const userData = JSON.parse(sessionStorage.getItem('currentUser')) || { role: 'student', displayName: 'User' };
+            
+            if (userName && userData) {
+                userName.textContent = userData.displayName;
+            }
+            
+            // Set current date and time
+            const dateDisplay = document.querySelector('.text-gray-500');
+            if (dateDisplay) {
+                const now = new Date();
+                const options = { year: 'numeric', month: 'short', day: 'numeric', weekday: 'long' };
+                const timeOptions = { hour: 'numeric', minute: 'numeric', hour12: true };
+                const formattedDate = now.toLocaleDateString('en-US', options);
+                const formattedTime = now.toLocaleTimeString('en-US', timeOptions);
+                dateDisplay.textContent = `${formattedDate} | ${formattedTime}`;
+            }
+            
+            // Logout functionality
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    firebase.auth().signOut().then(() => {
+                        sessionStorage.removeItem('currentUser');
+                        window.location.href = 'login.html';
+                    }).catch(error => {
+                        console.error('Error signing out:', error);
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html> 
